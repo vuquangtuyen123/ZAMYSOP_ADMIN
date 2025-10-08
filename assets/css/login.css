@@ -1,0 +1,187 @@
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    animation: fadeIn 1s ease-in-out;
+}
+
+.login-box {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 60px 80px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 500px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(8px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    z-index: 1;
+}
+
+.login-box:hover {
+    transform: scale(1.02);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+.logo h1 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    animation: slideIn 1s ease-out;
+}
+
+.logo p {
+    margin: 0;
+    color: #666;
+    font-size: 20px;
+    font-style: italic;
+    font-weight: 300;
+    animation: slideIn 1.2s ease-out;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 15px;
+    margin: 15px 0;
+    border: none;
+    border-bottom: 2px solid #ddd;
+    background: transparent;
+    color: #333;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước */
+}
+
+.login-box input:focus {
+    border-bottom-color: #000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-box button {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(90deg, #000, #333);
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+}
+
+.login-box button:hover {
+    background: linear-gradient(90deg, #333, #555);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.error {
+    color: #d32f2f;
+    margin-bottom: 15px;
+    font-size: 14px;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.campaign {
+    margin-top: 20px;
+    color: #666;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 500;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+/* Điều chỉnh để nút toggle-password không xuống dòng */
+.password-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center; /* Căn giữa theo chiều dọc */
+}
+
+.password-container input {
+    flex: 1; /* Chiếm phần lớn không gian */
+    margin-right: 10px; /* Khoảng cách giữa input và icon */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px; /* Đặt icon sát mép phải */
+    top: 50%;
+    transform: translateY(-50%); /* Căn giữa theo chiều dọc */
+    cursor: pointer;
+    font-size: 18px;
+    color: #666;
+    transition: color 0.3s;
+    padding: 5px; /* Thêm padding để dễ nhấp */
+    background: none; /* Loại bỏ nền nếu có */
+    border: none; /* Loại bỏ viền nếu có */
+}
+
+.toggle-password:hover {
+    color: #000;
+}
+
+/* Background images with transition */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('https://acddbjalchiruigappqg.supabase.co/storage/v1/object/public/product-images/banners/banner5.jpg') no-repeat center center fixed;
+    background-size: cover;
+    z-index: -1;
+    animation: slideBackground 15s infinite;
+}
+
+body::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('https://acddbjalchiruigappqg.supabase.co/storage/v1/object/public/product-images/banners/banner1.jpg') no-repeat center center fixed;
+    background-size: cover;
+    z-index: -2;
+    opacity: 0;
+    animation: slideBackground 15s infinite 7.5s;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideBackground {
+    0% { opacity: 1; }
+    45% { opacity: 1; }
+    55% { opacity: 0; }
+    100% { opacity: 0; }
+}
