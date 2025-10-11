@@ -136,4 +136,6 @@
        - Logo và tên thương hiệu
        - Campaign information
        - Consistent color scheme
+       - php -S localhost:3000 -t D:\Doan_admin\public
+       - echo "Stopping server..." && taskkill /F /IM php.exe
 -->
