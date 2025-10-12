@@ -30,7 +30,7 @@ body {
 
 .logo {
     text-align: center;
-    padding: 0 12px 15px;
+    padding: 0 12px 8px;
     border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 
@@ -47,7 +47,7 @@ body {
 }
 
 .menu-dieu-huong {
-    padding: 10px 0;
+    padding: 5px 0;
 }
 
 .menu-dieu-huong ul {
@@ -393,7 +393,7 @@ body {
 /* Nút đăng xuất ở menu */
 .nut-dang-xuat-menu {
     position: absolute;
-    bottom: 20px;
+    bottom: 0px;   
     left: 0;
     right: 0;
 }
@@ -428,7 +428,7 @@ body {
     color: #666;
     text-transform: uppercase;
     letter-spacing: 1px;
-    padding: 15px 20px 8px 20px;
+    padding: 10px 20px 8px 20px;
     margin-bottom: 5px;
     border-bottom: 1px solid #eee;
 }

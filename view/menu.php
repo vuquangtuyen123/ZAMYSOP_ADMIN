@@ -23,9 +23,9 @@
                     </span>
                     <!-- Submenu sản phẩm -->
                     <ul class="menu-con" id="menu-san-pham">
-                        <li><a href="index.php?c=product&a=index"><i class="fas fa-list"></i> Tất cả sản phẩm</a></li>
-                    
-                        <li><a href="index.php?c=category&a=index"><i class="fas fa-sitemap"></i> Danh mục</a></li>
+                        <li><a href="index.php?c=danhmuc&a=index"><i class="fas fa-list"></i> Tất cả sản phẩm</a></li>
+                      
+                        <li><a href="index.php?c=danhmuc&a=index"><i class="fas fa-sitemap"></i> Danh mục</a></li>
                         <li><a href="index.php?c=collection&a=index"><i class="fas fa-layer-group"></i> Bộ sưu tập</a></li>
                     </ul>
                 </li>

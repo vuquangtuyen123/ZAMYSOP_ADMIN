@@ -33,12 +33,18 @@ $a = $_GET['a'] ?? 'login';   // Tên action mặc định là 'login'
  * Tự động tạo tên class controller theo convention:
  * - URL: ?c=login -> Class: LoginController
  * - URL: ?c=user -> Class: UserController
- * - URL: ?c=product -> Class: ProductController
+ * - URL: ?c=danhmuc -> Class: DanhmucController
  */
 $controllerName = ucfirst($c) . 'Controller';
 
 // Tạo đường dẫn đến file controller
-$controllerFile = __DIR__ . '/../controller/' . $c . '_controller.php';
+// Kiểm tra nếu có thư mục con cho controller
+$controllerFile = __DIR__ . '/../controller/' . $c . '_controller/' . $c . '_controller.php';
+
+// Nếu không tìm thấy trong thư mục con, thử tìm trong thư mục gốc
+if (!file_exists($controllerFile)) {
+    $controllerFile = __DIR__ . '/../controller/' . $c . '_controller.php';
+}
 
 /**
  * Controller Execution Flow
