@@ -1,0 +1,256 @@
+
+/* Khung chính (đồng bộ với tin tức) */
+.noi-dung-chinh {
+    margin-left: 250px;
+    padding: 20px;
+    min-height: calc(100vh - 70px);
+    background-color: #f9f9f9;
+    transition: margin-left 0.3s ease;
+    box-sizing: border-box;
+    color: #222;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+}
+
+@media (max-width: 768px) {
+    .noi-dung-chinh {
+        margin-left: 0;
+        padding: 10px;
+    }
+}
+
+/* Tiêu đề */
+.noi-dung-chinh h3,
+.thanh-tieu-de h3 {
+    color: #2c3e50;
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #D9D9D9;
+}
+
+/* Thanh tiêu đề */
+.thanh-tieu-de {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border-radius: 6px;
+}
+
+/* Nút thêm mới */
+.them-moi-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background-color: #92D583;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+}
+.them-moi-btn:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40,167,69,0.3);
+}
+.them-moi-btn i {
+    font-size: 0.9rem;
+}
+
+/* Lưới banner: 3 ảnh trên 1 hàng, ảnh to hơn */
+.banner-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-top: 32px;
+}
+@media (max-width: 1200px) {
+    .banner-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 768px) {
+    .banner-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Banner item */
+.banner-item {
+    position: relative;
+    background: #fff;
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s, transform 0.2s;
+}
+.banner-item:hover {
+    background-color: #e9ecef;
+    transform: translateY(-4px);
+}
+
+/* Ảnh banner */
+.banner-img {
+    max-width: 100%;
+    max-height: 260px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+    width: 100%;
+    transition: opacity 0.3s;
+}
+.banner-img:hover {
+    opacity: 0.8;
+}
+
+/* Ngày tạo */
+.banner-date {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #34495e;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.banner-date i {
+    font-size: 15px;
+    color: #2196F3;
+}
+
+/* Nút xóa */
+.delete-banner {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 50%;
+    padding: 6px;
+    color: #dc3545;
+    font-size: 18px;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
+}
+.delete-banner:hover {
+    background-color: #dc3545;
+    color: #fff;
+    transform: scale(1.1);
+}
+.delete-banner i {
+    font-size: 0.95rem;
+}
+
+/* Toggle switch */
+.switch {
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    display: inline-block;
+    width: 40px;
+    height: 22px;
+}
+.switch input {
+    display: none;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: #ccc;
+    border-radius: 22px;
+    transition: background-color 0.4s;
+}
+.slider:before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.4s;
+}
+.switch input:checked + .slider {
+    background-color: #4CAF50;
+}
+.switch input:checked + .slider:before {
+    transform: translateX(18px);
+}
+
+/* Form thêm banner */
+form {
+    max-width: 520px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 32px 28px;
+}
+.form-group {
+    margin-bottom: 28px;
+}
+.form-group label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #34495e;
+    margin-bottom: 10px;
+}
+.form-group input[type="file"] {
+    padding: 14px;
+    font-size: 15px;
+    border-radius: 7px;
+}
+.form-group input[type="checkbox"] {
+    accent-color: #92D583;
+    margin-right: 10px;
+}
+
+/* Toast thông báo */
+.toast {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    min-width: 220px;
+    background: #34c253;
+    color: #fff;
+    padding: 14px 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    font-size: 16px;
+}
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+.toast.hide {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+/* Thông điệp khi không có banner */
+.banner-grid p {
+    grid-column: 1 / -1;
+    margin: 12px 0;
+    color: #5b6270;
+    text-align: center;
+    font-size: 16px;
+}

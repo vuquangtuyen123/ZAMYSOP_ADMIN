@@ -6,19 +6,19 @@
     <title>Quản lý Danh mục - Zamy Shop Admin</title>
     
     <!-- CSS cho giao diện dashboard -->
-    <link rel="stylesheet" href="../../assets/css/dashboard-tiengviet.css">
+    <link rel="stylesheet" href="assets/css/dashboard-tiengviet.css">
     
     <!-- CSS riêng cho trang danh mục -->
-    <link rel="stylesheet" href="../../assets/css/category.css">
+    <link rel="stylesheet" href="assets/css/category.css">
     
     <!-- Font Awesome cho icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Dashboard JavaScript -->
-    <script src="../../assets/js/dashboard.js"></script>
+    <script src="assets/js/dashboard.js"></script>
     
     <!-- JavaScript riêng cho trang danh mục -->
-    <script src="../../assets/js/danhmuc.js"></script>
+    <script src="assets/js/danhmuc.js"></script>
 </head>
 <body>
     <!-- Container chính của dashboard -->

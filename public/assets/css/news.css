@@ -1,0 +1,462 @@
+/* Đảm bảo sidebar không bị che khuất khi hiển thị nội dung news */
+.noi-dung-chinh {
+    margin-left: 250px; /* Tương ứng với chiều rộng sidebar */
+    padding: 20px;
+    transition: margin-left 0.3s;
+    min-height: calc(100vh - 70px); 
+    background-color: #f9f9f9;
+}
+
+@media (max-width: 768px) {
+    .noi-dung-chinh {
+        margin-left: 0;
+        padding: 10px;
+    }
+}
+
+/* Style cho header */
+.thanh-tieu-de {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 15px 0;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+.hop-tim-kiem {
+    position: relative;
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.hop-tim-kiem form {
+    display: flex;
+    align-items: center;
+    position: relative; /* Thêm dòng này để chứa icon */
+}
+
+.hop-tim-kiem input {
+    padding: 10px 40px 10px 15px; /* Tăng khoảng phải cho icon */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 320px; /* Tăng chiều rộng */
+    font-size: 14px;
+    transition: border-color 0.3s, background-color 0.3s, box-shadow 0.3s;
+}
+
+.hop-tim-kiem button {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: #666;
+    font-size: 18px;
+}
+
+.hop-tim-kiem button:focus {
+    outline: none;
+}
+
+.hop-tim-kiem .fas {
+    pointer-events: none; /* Để click vào button, không phải icon */
+}
+
+.hop-tim-kiem input:focus {
+    border-color: #007bff;
+    outline: none;
+    border-width: 2px; /* Viền đậm hơn khi nhấn */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Thêm bóng nhẹ để nổi bật */
+    background-color: #f8f9fa; /* Màu nền nhạt khi nhấn */
+}
+
+
+
+.thong-tin-nguoi-dung {
+    font-size: 15px;
+    color: #333;
+    margin-right: 10px;
+}
+
+.thong-tin-nguoi-dung small {
+    display: block;
+    font-size: 12px;
+    color: #777;
+}
+
+/* Căn chỉnh nút "Tất cả" nằm cạnh ô tìm kiếm */
+.all-btn {
+    display: inline-block;
+    padding: 9px 16px;
+    background-color: #2196F3;
+    color: #fff !important;
+    border-radius: 6px;
+    font-weight: 500;
+    border: 1px solid #2196F3;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.all-btn:hover {
+    background-color: #0b7dda;
+}
+
+
+/* Style cho bảng tin tức (index.php) */
+.news-list {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.news-list th,
+.news-list td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.news-list th {
+    background-color: #D9D9D9;
+    color: #000000;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.news-list td {
+    vertical-align: middle;
+}
+
+
+.news-item {
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.news-item:hover,
+.news-item.active {
+    background-color: #e9ecef; /* Màu nền khi hover hoặc active */
+    transform: scale(1.01); /* Tăng kích thước nhẹ khi nhấp */
+    cursor: pointer;
+}
+
+.news-img {
+    max-width: 150px;
+    max-height: 100px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: opacity 0.3s;
+}
+
+.news-img:hover {
+    opacity: 0.8;
+}
+
+.them-moi-btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: #92D583;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    transition: background-color 0.3s, transform 0.2s;
+    float: right; /* Di chuyển nút sang bên phải */
+}
+
+.them-moi-btn:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+}
+
+.action-link {
+    display: inline-block;
+    padding: 8px 12px;
+    margin-right: 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.edit-link {
+    color: #28a745;
+    border: 1px solid #28a745;
+}
+
+.edit-link:hover {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.delete-link {
+    color: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+.delete-link:hover {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+/*Thêm CSS cho toggle switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+  margin-right: 8px;
+}
+.switch input {display:none;}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 22px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px; width: 18px;
+  left: 2px; bottom: 2px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: #4CAF50;
+}
+input:checked + .slider:before {
+  transform: translateX(18px);
+}
+
+/* Modal cho chi tiết tin tức */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Tăng độ tối của nền */
+    z-index: 2000;
+    overflow: auto; /* Cho phép cuộn nếu nội dung dài */
+    backdrop-filter: blur(3px); /* Thêm hiệu ứng mờ cho nền */
+}
+
+.modal-content {
+    background-color: #ffffff;
+    margin: 7% auto; /* Tăng khoảng cách từ trên xuống */
+    padding: 25px 35px; /* Tăng padding cho không gian rộng rãi hơn */
+    border-radius: 12px; /* Góc bo tròn lớn hơn */
+    width: 90%;
+    max-width: 900px; /* Tăng chiều rộng tối đa */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25); /* Bóng đổ đậm hơn */
+    position: relative;
+    animation: fadeInSlide 0.4s ease-out; /* Hiệu ứng kết hợp fade và slide */
+}
+
+@keyframes fadeInSlide {
+    from {
+        transform: translateY(-60px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    font-size: 26px; /* Tăng kích thước chữ */
+    border-bottom: 3px solid #D9D9D9; /* Đường viền dày hơn */
+    padding-bottom: 12px;
+    font-weight: 700;
+}
+
+.modal-content p {
+    color: #34495e;
+    font-size: 16px;
+    line-height: 1.8; /* Tăng khoảng cách dòng */
+    margin: 18px 0;
+    padding: 12px;
+    background-color: #f1f3f5; /* Màu nền nhạt hơn */
+    border-left: 5px solid #6c6c6c; /* Thay màu viền trái sang xanh lá nhạt hơn */
+    border-radius: 6px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05); /* Thêm bóng nhẹ trong nội dung */
+}
+
+.modal-content strong {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.close-modal {
+    float: right;
+    font-size: 30px; /* Tăng kích thước nút đóng */
+    font-weight: bold;
+    cursor: pointer;
+    color: #888;
+    transition: color 0.3s, transform 0.2s; /* Thêm hiệu ứng scale */
+}
+
+.close-modal:hover {
+    color: #e74c3c; /* Thay màu đỏ đậm hơn */
+    transform: scale(1.1); /* Phóng to khi hover */
+}
+
+.news-img {
+    max-width: 100%; /* Đảm bảo hình ảnh không vượt quá modal */
+    border-radius: 6px; /* Góc bo tròn lớn hơn */
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15); /* Bóng đổ rõ hơn */
+    margin-top: 10px; /* Thêm khoảng cách trên */
+}
+
+/* thêm. sửa*/
+
+noi-dung-dashboard {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.4s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.noi-dung-dashboard h3 {
+    color: #2c3e50;
+    font-size: 28px;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #D9D9D9;
+    padding-bottom: 10px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: #34495e;
+    margin-bottom: 8px;
+    font-size: 15px;
+}
+
+.form-group input[type="text"],
+.form-group textarea,
+.form-group input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 14px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-group textarea {
+    height: 150px;
+    resize: vertical;
+}
+
+.form-group input[type="text"]:focus,
+.form-group textarea:focus,
+.form-group input[type="file"]:focus {
+    border-color: #92D583;
+    box-shadow: 0 0 6px rgba(146, 213, 131, 0.5);
+    outline: none;
+}
+
+.form-group input[type="checkbox"] {
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+.form-group input[type="checkbox"] + label {
+    display: inline;
+    color: #34495e;
+    font-weight: 500;
+}
+
+.them-moi-btn {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: #92D583;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.them-moi-btn:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+}
+/* Toast thông báo*/
+.toast {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    min-width: 220px;
+    background: #34c253;
+    color: #fff;
+    padding: 14px 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 16px;
+}
+.toast.show {
+    opacity: 1;
+}
+/*phân trang*/
+
+/* Đặt khung chứa tin tức là position:relative */
+.noi-dung-dashboard {
+    position: relative;
+}
+
+/*phân trang*/
+.pagination {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -20px; /* Lùi lên một chút so với sát mép dưới */
+    width: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    background: transparent;
+    z-index: 10;
+}
+   

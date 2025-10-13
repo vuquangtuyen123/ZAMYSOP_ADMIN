@@ -191,3 +191,4 @@ function xoaDanhMuc(maDanhMuc) {
         window.location.href = 'index.php?c=danhmuc&a=delete&id=' + maDanhMuc;
     }
 }
+
