@@ -6,17 +6,20 @@
 <script src="assets/js/dashboard.js"></script>
 <script src="assets/js/news.js"></script>
 <script src="assets/js/danhmuc.js"></script>
-
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Tin Tức</title>
+</head>
 <main class="noi-dung-chinh">
    <header class="thanh-tieu-de">
     <div class="hop-tim-kiem">
         <form method="GET" action="index.php">
             <input type="hidden" name="c" value="news">
             <input type="hidden" name="a" value="index">
-            <input type="text" name="search" value="<?= htmlspecialchars($search ?? '') ?>" placeholder="Tìm kiếm tin tức" aria-label="Tìm kiếm">
+            <input type="text" name="search" value="<?= htmlspecialchars($search ?? '') ?>" placeholder="Tìm kiếm tin tức (tiêu đề)" aria-label="Tìm kiếm">
             <button type="submit"><i class="fas fa-search"></i></button>
         </form>
-        <a href="index.php?c=news&a=index&reset=1" class="all-btn">Tất cả</a>
+        <a href="index.php?c=news&a=index&reset=1" class="all-btn">Tải lại</a>
     </div>
     <div class="thong-tin-nguoi-dung">
         <span>Xin chào: <?= htmlspecialchars($_SESSION['user_name'] ?? $_SESSION['user_email']) ?></span>

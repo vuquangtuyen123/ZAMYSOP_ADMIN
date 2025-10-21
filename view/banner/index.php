@@ -1,4 +1,5 @@
 <?php
+
 include __DIR__ . '/../menu.php'; ?>
 <link rel="stylesheet" href="assets/css/banner.css">
 <link rel="stylesheet" href="assets/css/dashboard-tiengviet.css">
@@ -6,6 +7,10 @@ include __DIR__ . '/../menu.php'; ?>
 <script src="assets/js/dashboard.js"></script>
 <script src="assets/js/danhmuc.js"></script>
 <script src="assets/js/banner.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Banner</title>
+</head>
 <main class="noi-dung-chinh">
     <div class="noi-dung-dashboard">
         <div class="thanh-tieu-de">

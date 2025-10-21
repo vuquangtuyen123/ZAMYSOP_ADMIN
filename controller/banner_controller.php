@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../model/banner_model.php'; 
 require_once __DIR__ . '/../config/supabase.php';
-
+date_default_timezone_set('Asia/Ho_Chi_Minh'); 
 
 class BannerController {
     private $model;

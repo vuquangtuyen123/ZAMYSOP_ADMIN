@@ -4,6 +4,7 @@ require_once __DIR__ . '/../config/supabase.php';
 class NewsModel {
 
 public function getAllNews($conditions = [], $search = '', $limit = 0, $offset = 0) {
+    
     $queryParams = [
         'select' => '*',
         'order' => 'ma_tin_tuc.desc'

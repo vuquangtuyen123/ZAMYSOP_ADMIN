@@ -2,8 +2,9 @@
 error_reporting(E_ALL & ~E_NOTICE);
 require_once __DIR__ . '/../model/news_model.php'; 
 require_once __DIR__ . '/../config/supabase.php';
-
+date_default_timezone_set('Asia/Ho_Chi_Minh'); 
 class NewsController {
+    
     private $model;
     private $itemsPerPage = 2; // Số mục trên mỗi trang
 

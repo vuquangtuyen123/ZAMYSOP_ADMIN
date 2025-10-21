@@ -5,6 +5,7 @@
     transition: margin-left 0.3s;
     min-height: calc(100vh - 70px); 
     background-color: #f9f9f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 @media (max-width: 768px) {
@@ -16,6 +17,7 @@
 
 /* Style cho header */
 .thanh-tieu-de {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     justify-content: space-between;
     align-items: center;
