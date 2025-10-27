@@ -7,6 +7,7 @@ class MessageController {
     private $admin_id = 1; // admin id
 
     public function __construct() {
+        date_default_timezone_set('Asia/Ho_Chi_Minh'); // Đảm bảo múi giờ Việt Nam
         $this->model = new MessageModel();
         if (!isset($_SESSION['user_id'])) {
             header("Location: index.php?c=auth&a=login");
@@ -17,33 +18,45 @@ class MessageController {
     public function index() {
         $filter = $_GET['filter'] ?? 'all';
         $search = trim($_GET['search'] ?? '');
-        $user_id = $_GET['user_id'] ?? null; // note: now we use user_id to select chat thread (aggregated)
+        $user_id = $_GET['user_id'] ?? null;
+        
+        $chats = $this->model->getChatsByAdminWithSearch($this->admin_id, $search, $filter);
+        $all_chats = $this->model->getChatsByAdminWithSearch($this->admin_id, '', 'all');
+        
+        $total_all = count($all_chats);
+        $total_unread = count(array_filter($all_chats, fn($c) => (int)($c['unread_count'] ?? 0) > 0));
+        $total_read = count(array_filter($all_chats, fn($c) => (int)($c['unread_count'] ?? 0) === 0));
+
+        $total_unread_display = $total_unread;
+        $total_read_display = $total_read;
+        
+        if ($filter === 'unread') {
+            $total_read_display = $total_all - count($chats);
+        } elseif ($filter === 'read') {
+            $total_unread_display = $total_all - count($chats);
+        }
+
         $messages = [];
         $user_name = '';
         $noResults = false;
 
-        // lấy list users (mỗi user 1 entry)
-        $chats = $this->model->getChatsByAdminWithSearch($this->admin_id, $search);
-
-        // tổng unread/read (tính từ $chats)
-        $total_unread = array_reduce($chats, fn($carry,$c) => $carry + (isset($c['unread_count']) ? (int)$c['unread_count'] : 0), 0);
-        $total_all = count($chats);
-        $total_read = $total_all; // we can compute differently if needed
-
-        if (!empty($search) && empty($chats)) {
+        if (!empty($search) && empty($chats) && empty($user_id)) {
             $noResults = true;
-        } elseif ($user_id) {
-            // kiểm tra user có trong danh sách
-            $found = null;
-            foreach ($chats as $c) {
-                if ($c['user_id'] == $user_id) { $found = $c; break; }
+        }
+
+        if ($user_id) {
+            $found_chat = null;
+            foreach ($all_chats as $chat) {
+                if ($chat['user_id'] == $user_id) {
+                    $found_chat = $chat;
+                    break;
+                }
             }
-            if ($found) {
-                // lấy tất cả messages giữa user và admin
+            
+            if ($found_chat) {
                 $messages = $this->model->getMessagesByUser($user_id, $this->admin_id);
-                // đánh dấu read cho tất cả messages của user
                 $this->model->markUserMessagesAsRead($user_id, $this->admin_id);
-                $user_name = $found['user_name'] ?? '';
+                $user_name = $found_chat['user_name'] ?? 'Người dùng';
             } else {
                 $noResults = true;
             }
@@ -54,42 +67,36 @@ class MessageController {
 
     public function send() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['noi_dung'])) {
-            // We expect a chat_id to exist for sending; if user_id posted, choose latest chat for that user
-            $chat_id = $_POST['chat_id'] ?? null;
-            $user_id = $_POST['user_id'] ?? null;
-            $noi_dung = trim($_POST['noi_dung'] ?? '');
+            $user_id = $_POST['user_id'] ?? $_GET['user_id'] ?? null;
+            $noi_dung = trim($_POST['noi_dung']);
 
-            if (!$chat_id && $user_id) {
-                // tìm chat id mới nhất giữa user và admin
+            if ($user_id && $noi_dung) {
                 $chats = supabase_request('GET', 'chats', [
                     'or' => "(and(ma_nguoi_dung_1.eq.$user_id,ma_nguoi_dung_2.eq.{$this->admin_id}),and(ma_nguoi_dung_1.eq.{$this->admin_id},ma_nguoi_dung_2.eq.$user_id))",
                     'order' => 'ngay_cap_nhat.desc',
                     'limit' => 1
                 ]);
-                if (!empty($chats['data'])) $chat_id = $chats['data'][0]['ma_chat'];
+                
+                if (!empty($chats['data'])) {
+                    $chat_id = $chats['data'][0]['ma_chat'];
+                    // Tạo thời gian ở múi giờ Việt Nam và chuyển sang UTC
+                    $date = new DateTime('now', new DateTimeZone('Asia/Ho_Chi_Minh'));
+                    $date->setTimezone(new DateTimeZone('UTC'));
+                    $current_time = $date->format('Y-m-d H:i:s');
+                    $this->model->sendMessage($chat_id, $this->admin_id, $noi_dung, $current_time);
+                }
             }
-
-            if ($chat_id && $noi_dung) {
-                date_default_timezone_set('UTC');
-                $current_time = gmdate('Y-m-d H:i:s');
-                $this->model->sendMessage($chat_id, $this->admin_id, $noi_dung, $current_time);
-            }
-
-            // keep state
-            $_GET['user_id'] = $user_id;
-            $_GET['filter'] = $_GET['filter'] ?? 'all';
-            $_GET['search'] = $_GET['search'] ?? '';
         }
 
-        $this->index();
-    }
-
-    public function delete() {
-        $chat_id = $_GET['chat_id'] ?? null;
-        if ($chat_id) {
-            $this->model->deleteChat($chat_id);
-            unset($_GET['user_id']);
-        }
-        $this->index();
+        $params = [
+            'c' => 'message',
+            'a' => 'index',
+            'user_id' => $user_id,
+            'filter' => $_GET['filter'] ?? 'all',
+            'search' => $_GET['search'] ?? ''
+        ];
+        header('Location: index.php?' . http_build_query($params));
+        exit();
     }
 }
+?>

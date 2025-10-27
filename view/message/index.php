@@ -1,5 +1,4 @@
 <?php
-
 error_reporting(E_ALL & ~E_NOTICE);
 session_start();
 date_default_timezone_set('Asia/Ho_Chi_Minh');
@@ -30,15 +29,15 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
                 <input type="hidden" name="a" value="index">
                 <input type="hidden" name="filter" value="<?= htmlspecialchars($filter ?? 'all') ?>">
                 <input type="text" name="search" value="<?= htmlspecialchars($search ?? '') ?>" placeholder="Tìm kiếm người dùng..." id="searchInput" onkeypress="if(event.key === 'Enter') submitSearch(event)">
-                <button type="submit" onclick="submitSearch(event)"></i></button>
+                <button type="submit" onclick="submitSearch(event)"><i class=""></i></button>
             </form>
             <button onclick="reloadPage()" class="nut-tai-lai">Tải lại</button>
         </div>
 
         <div class="loc">
-            <a href="index.php?c=message&a=index&filter=all&search=<?= urlencode($search ?? '') ?>">Tất cả (<?= count($chats) ?>)</a> |
-            <a href="index.php?c=message&a=index&filter=unread&search=<?= urlencode($search ?? '') ?>">Chưa đọc (<?= $total_unread ?? 0 ?>)</a> |
-            <a href="index.php?c=message&a=index&filter=read&search=<?= urlencode($search ?? '') ?>">Đã đọc (<?= $total_read ?? 0 ?>)</a>
+            <a href="index.php?c=message&a=index&filter=all&search=<?= urlencode($search ?? '') ?>">Tất cả (<?= $total_all ?>)</a> |
+            <a href="index.php?c=message&a=index&filter=unread&search=<?= urlencode($search ?? '') ?>">Chưa đọc (<?= isset($total_unread_display) ? $total_unread_display : $total_unread ?>)</a> |
+            <a href="index.php?c=message&a=index&filter=read&search=<?= urlencode($search ?? '') ?>">Đã đọc (<?= isset($total_read_display) ? $total_read_display : $total_read ?>)</a>
         </div>
 
         <div class="danh-sach-chat-container">
@@ -69,11 +68,10 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
         </div>
     </div>
 
-    <!-- 🟦 Cột bên phải: Chi tiết tin nhắn -->
+    <!--  Cột bên phải: Chi tiết tin nhắn -->
     <div class="ben-phai">
         <?php if ($noResults): ?>
             <p class="khong-co-ket-qua">Không có kết quả phù hợp</p>
-
         <?php elseif (!empty($user_name)): ?>
             <h2>Chat với <?= htmlspecialchars($user_name) ?></h2>
 
@@ -106,7 +104,6 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
                     <button type="submit" class="nut-gui"><i class="fas fa-paper-plane"></i></button>
                 </form>
             </div>
-
         <?php else: ?>
             <p>Chọn một cuộc trò chuyện để xem chi tiết.</p>
         <?php endif; ?>
@@ -121,8 +118,9 @@ function submitSearch(event) {
     form.submit();
 }
 
+//  NÚT "Tải lại" = XÓA TÌM KIẾM & HIỂN THỊ TẤT CẢ
 function reloadPage() {
-    window.location.href = 'index.php?c=message&a=index&filter=<?= $filter ?? 'all' ?>&search=<?= urlencode($search ?? '') ?>';
+    window.location.href = 'index.php?c=message&a=index&filter=<?= $filter ?? "all" ?>';
 }
 
 function validateForm() {
@@ -134,7 +132,6 @@ function validateForm() {
     return true;
 }
 
-// Ngăn gửi form lặp lại khi reload
 if (window.history.replaceState) {
     window.history.replaceState(null, document.title, window.location.href);
 }
