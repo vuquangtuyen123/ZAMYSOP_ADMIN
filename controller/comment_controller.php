@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../model/comment_model.php';
-date_default_timezone_set('Asia/Ho_Chi_Minh'); 
+date_default_timezone_set('Asia/Ho_Chi_Minh');
 
 class CommentController {
     private $model;
@@ -16,91 +16,107 @@ class CommentController {
         $tab = $_GET['tab'] ?? 'reviews';
         $page = max(1, (int)($_GET['page'] ?? 1));
 
-        // Lấy danh sách đánh giá (bao gồm cả cha và con)
-        $reviews = $this->model->getAllReviewsFlat($filter, $rating, $reply_status, $page, 20);
-        if (!is_array($reviews)) {
-            error_log("Invalid reviews data in CommentController::index");
-            $reviews = [];
-        }
+        // === TAB: DANH SÁCH ĐÁNH GIÁ ===
+        if ($tab !== 'products') {
+            $reviews = $this->model->getAllReviewsFlat($filter, $rating, $reply_status, $page, 20);
+            if (!is_array($reviews)) {
+                error_log("Invalid reviews data in CommentController::index");
+                $reviews = [];
+            }
 
-        // Xây dựng cấu trúc cây
-        $grouped_reviews = $this->buildReviewTree($reviews);
+            $grouped_reviews = $this->buildReviewTree($reviews);
+            $total_reviews = $this->model->countReviews($filter, $rating, $reply_status);
+            $total_pages = ceil($total_reviews / 20);
 
-        // Tab sản phẩm
-        if ($tab === 'products') {
             $products = [];
-            foreach ($reviews as $r) {
-                $pid = $r['ma_san_pham'] ?? null;
-                $pname = $r['products']['ten_san_pham'] ?? 'Không rõ';
-                if (!$pid || !empty($r['ma_danh_gia_cha'])) continue;
-
-                if (!isset($products[$pid])) {
-                    $products[$pid] = [
-                        'ten_san_pham' => $pname,
-                        'tong_diem' => 0,
-                        'so_danh_gia_co_sao' => 0,
-                        'tong_binh_luan' => 0
-                    ];
-                }
-
-                if (!empty($r['diem_danh_gia']) && is_numeric($r['diem_danh_gia'])) {
-                    $products[$pid]['tong_diem'] += (float)$r['diem_danh_gia'];
-                    $products[$pid]['so_danh_gia_co_sao']++;
-                }
-
-                $products[$pid]['tong_binh_luan']++;
-            }
-
-            $result = [];
-            foreach ($products as $pid => $p) {
-                $sao_tb = ($p['so_danh_gia_co_sao'] > 0)
-                    ? round($p['tong_diem'] / $p['so_danh_gia_co_sao'], 1)
-                    : 0;
-
-                $result[] = [
-                    'ten_san_pham' => $p['ten_san_pham'],
-                    'so_luong' => $p['tong_binh_luan'],
-                    'sao_tb' => $sao_tb
-                ];
-            }
-            usort($result, fn($a, $b) => $b['sao_tb'] <=> $a['sao_tb']);
-
-            $products = $result;
-            $grouped_reviews = [];
             require __DIR__ . '/../view/comment/index.php';
             return;
         }
 
-        // Tính tổng số trang
-        $total_reviews = $this->model->countReviews($filter, $rating, $reply_status);
-        $total_pages = ceil($total_reviews / 20);
-
+        // === TAB: SẢN PHẨM ĐÁNH GIÁ ===
+        $all_reviews = $this->model->getAllReviewsFlat('all', null, null, 1, 10000);
         $products = [];
+        $chart_product_names = [];
+        $chart_review_counts = [];
+        $chart_negative_counts = [];
+
+        foreach ($all_reviews as $r) {
+            $pid = $r['ma_san_pham'] ?? null;
+            $pname = $r['products']['ten_san_pham'] ?? 'Không rõ';
+            if (!$pid || !empty($r['ma_danh_gia_cha'])) continue;
+
+            if (!isset($products[$pid])) {
+                $products[$pid] = [
+                    'ten_san_pham' => $pname,
+                    'tong_diem' => 0,
+                    'so_danh_gia_co_sao' => 0,
+                    'tong_binh_luan' => 0,
+                    'tich_cuc' => 0,
+                    'tieu_cuc' => 0
+                ];
+            }
+
+            if (!empty($r['diem_danh_gia']) && is_numeric($r['diem_danh_gia'])) {
+                $products[$pid]['tong_diem'] += (float)$r['diem_danh_gia'];
+                $products[$pid]['so_danh_gia_co_sao']++;
+            }
+
+            $products[$pid]['tong_binh_luan']++;
+            $products[$pid][$r['trang_thai'] == 1 ? 'tich_cuc' : 'tieu_cuc']++;
+        }
+
+        $result = [];
+        foreach ($products as $pid => $p) {
+            $sao_tb = ($p['so_danh_gia_co_sao'] > 0)
+                ? round($p['tong_diem'] / $p['so_danh_gia_co_sao'], 1)
+                : 0;
+
+            $result[] = [
+                'ma_san_pham' => $pid,
+                'ten_san_pham' => $p['ten_san_pham'],
+                'so_luong' => $p['tong_binh_luan'],
+                'sao_tb' => $sao_tb,
+                'tich_cuc' => $p['tich_cuc'],
+                'tieu_cuc' => $p['tieu_cuc']
+            ];
+        }
+
+        usort($result, fn($a, $b) => $b['sao_tb'] <=> $a['sao_tb']);
+        $products = $result;
+
+        // === DỮ LIỆU BIỂU ĐỒ ===
+        foreach ($result as $p) {
+            $chart_product_names[] = $p['ten_san_pham'];
+            $chart_review_counts[] = $p['so_luong'];
+            $chart_negative_counts[] = $p['tieu_cuc'];
+        }
+
+        $total_positive = array_sum(array_column($result, 'tich_cuc'));
+        $total_negative = array_sum(array_column($result, 'tieu_cuc'));
+
+        $top_negative = array_slice(
+            array_filter($result, fn($p) => $p['tieu_cuc'] > 0),
+            0, 5, true
+        );
+        usort($top_negative, fn($a, $b) => $b['tieu_cuc'] <=> $a['tieu_cuc']);
+
+        $grouped_reviews = [];
         require __DIR__ . '/../view/comment/index.php';
     }
 
-    // Hàm xây dựng cây bình luận
     private function buildReviewTree($reviews) {
-        if (!is_array($reviews)) {
-            error_log("Invalid reviews array in buildReviewTree");
-            return [];
-        }
+        if (!is_array($reviews)) return [];
 
         $tree = [];
         $map = [];
 
-        // Tạo map để tra cứu nhanh
         foreach ($reviews as $review) {
-            if (!is_array($review) || !isset($review['ma_danh_gia'])) {
-                error_log("Invalid review data in buildReviewTree: " . json_encode($review));
-                continue;
-            }
+            if (!isset($review['ma_danh_gia'])) continue;
             $review['replies'] = [];
             $review['total_replies'] = $this->countTotalReplies($review, $reviews);
             $map[$review['ma_danh_gia']] = $review;
         }
 
-        // Gắn các bình luận con vào cha
         foreach ($map as $id => $review) {
             if (!empty($review['ma_danh_gia_cha']) && isset($map[$review['ma_danh_gia_cha']])) {
                 $map[$review['ma_danh_gia_cha']]['replies'][] = &$map[$id];
@@ -112,7 +128,6 @@ class CommentController {
         return $tree;
     }
 
-    // Hàm đếm tổng số phản hồi con đệ quy (chỉ đếm trạng thái hiển thị)
     private function countTotalReplies($review, $all_reviews) {
         $count = 0;
         foreach ($all_reviews as $r) {
@@ -194,3 +209,4 @@ class CommentController {
         exit();
     }
 }
+?>

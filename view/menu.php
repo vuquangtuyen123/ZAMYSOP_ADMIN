@@ -13,7 +13,9 @@
                 <div class="tieu-de-nhom">TỔNG QUAN</div>
                 
                 <!-- Dashboard -->
-                <li><a href="index.php?c=login&a=dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+               <!--  <li><a href="index.php?c=login&a=dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li> -->
+                 <li><a href="index.php?c=dashboard&a=index"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+
                 
                 <!-- Menu Sản phẩm với submenu -->
                 <li class="muc-menu">

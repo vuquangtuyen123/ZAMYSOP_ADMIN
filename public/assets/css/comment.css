@@ -593,3 +593,39 @@ img.review-img:hover {
         font-size: 12px;
     }
 }
+        /* Biểu đồ nằm ngang */
+        .chart-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .chart-item {
+            flex: 1;
+            min-width: 300px;
+            background: #fff;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        @media (max-width: 768px) {
+            .chart-container { flex-direction: column; }
+            .chart-item { min-width: 100%; }
+        }
+
+        /* Căn giữa số + sao */
+        .avg-rating {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .avg-rating .stars {
+            display: flex;
+            gap: 1px;
+        }
+        .avg-rating .stars i {
+            font-size: 13px;
+            color: #f1c40f;
+        }

@@ -76,7 +76,7 @@ class LoginController {
                 $_SESSION['user_email'] = $user['email'];              // Email
                 
                 // Chuyển hướng đến trang dashboard
-                header("Location: index.php?c=login&a=dashboard");
+                header("Location:index.php?c=dashboard&a=index");
                 exit; // Dừng thực thi để đảm bảo chuyển hướng
             } else {
                 // Đăng nhập thất bại, lưu thông báo lỗi
