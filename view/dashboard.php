@@ -1,16 +1,3 @@
-<?php
-$summary         = $summary         ?? ['tong_don_hang' => 0, 'da_thanh_toan' => 0, 'chua_thanh_toan' => 0, 'don_huy' => 0, 'don_hoan' => 0, 'tong_doanh_thu' => 0];
-$categoryRevenue = $categoryRevenue ?? [];
-$topProducts     = $topProducts     ?? [];
-$cancelStats     = $cancelStats     ?? [];
-$returnStats     = $returnStats     ?? [];
-
-// ✅ Giữ giá trị lọc hiện tại
-$type  = $_GET['type']  ?? 'month';
-$value = $_GET['value'] ?? '';
-
-include __DIR__ . '../menu.php';
-?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -20,26 +7,28 @@ include __DIR__ . '../menu.php';
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> <!-- ✅ Dùng chụp PDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> <!-- ✅ Dùng tạo PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> 
   <link rel="stylesheet" href="assets/css/dashboard-tiengviet.css">
   <link rel="stylesheet" href="assets/css/baocao.css">
-  <style>
-    #export-report, #export-pdf {
-      border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      color: #fff;
-      font-weight: 500;
-      margin-left: 5px;
-    }
-    #export-report { background: #28a745; }
-    #export-pdf { background: #d63031; }
-  </style>
+  <script src="assets/js/dashboard.js"></script>
+  <script src="assets/js/danhmuc.js"></script>
 </head>
 
 <body>
+<?php
+$summary         = $summary         ?? ['tong_don_hang' => 0, 'da_thanh_toan' => 0, 'chua_thanh_toan' => 0, 'don_huy' => 0, 'don_hoan' => 0, 'tong_doanh_thu' => 0];
+$categoryRevenue = $categoryRevenue ?? [];
+$topProducts     = $topProducts     ?? [];
+$cancelStats     = $cancelStats     ?? [];
+$returnStats     = $returnStats     ?? [];
+
+$type  = $_GET['type']  ?? 'month';
+$value = $_GET['value'] ?? '';
+
+include __DIR__ . '../menu.php';
+?>
+
 <div class="container" id="report-container">
   <h2>Bảng điều khiển doanh thu & thống kê</h2>
 
@@ -71,7 +60,6 @@ include __DIR__ . '../menu.php';
       <button id="apply-filter">Áp dụng</button>
       <button id="reset-filter">Reset</button>
 
-      <!-- ✅ Các nút xuất -->
       <button id="export-report"><i class="fa fa-file-excel"></i> Xuất Excel</button>
       <button id="export-pdf"><i class="fa fa-file-pdf"></i> Xuất PDF</button>
     </div>
@@ -148,7 +136,6 @@ include __DIR__ . '../menu.php';
 
 <script src="assets/js/baocao.js"></script>
 
-<!-- === XUẤT EXCEL + PDF === -->
 <script>
 /* ====== XUẤT EXCEL ====== */
 document.getElementById('export-report').addEventListener('click', function () {

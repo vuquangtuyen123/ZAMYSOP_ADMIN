@@ -10,9 +10,10 @@ body {
 }
 
 .container {
-  max-width: 1300px;
-  margin: 0px auto;
-  padding: 20px;
+  max-width: calc(100% - 260px); /* Trừ đi chiều rộng sidebar trái */
+  margin-left: 260px;             /* Dịch toàn bộ dashboard sang phải */
+  margin-right: 20px;
+  padding: 30px;
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
@@ -74,11 +75,13 @@ h2 {
    BỘ LỌC VÀ BIỂU ĐỒ
  */
 .chart-section {
+  width: 100%;
   background: #fff;
-  padding: 25px;
+  padding: 25px 30px;
   border-radius: 14px;
   margin-bottom: 30px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+  overflow-x: auto;
 }
 
 .filter-bar {
@@ -136,22 +139,19 @@ h2 {
  */
 .double-chart {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 25px;
-}
-
-@media (max-width: 992px) {
-  .double-chart {
-    grid-template-columns: 1fr;
-  }
+  margin-top: 35px;
 }
 
 /* =BẢNG SẢN PHẨM BÁN CHẠY*/
 .table-section {
+  width: 100%;
   background: #fff;
-  padding: 25px;
+  padding: 25px 30px;
   border-radius: 14px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+  overflow-x: auto;
 }
 
 .table-section h3 {
@@ -204,43 +204,22 @@ canvas {
   margin: auto;
 }
 
-/*  HIỆU ỨNG NHẸ */
+/*  HIỆU ỨNG NHẮP */
 button:active {
   transform: scale(0.97);
 }
+
 /* CĂN CHỈNH DASHBOARD CHO PHÙ HỢP VỚI SIDEBAR TRÁI */
-
-.container {
-  max-width: calc(100% - 260px); /* Trừ đi chiều rộng sidebar trái */
-  margin-left: 260px;             /* Dịch toàn bộ dashboard sang phải */
-  margin-right: 20px;
-  padding: 30px;
-  transition: margin 0.3s ease;
-}
-
-/* Giúp biểu đồ và bảng fit đều trong khung hiển thị */
-.chart-section, .table-section {
-  width: 100%;
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  padding: 25px 30px;
-  overflow-x: auto;
-}
-
-/* Căn ngang hai biểu đồ (doanh thu theo danh mục + top sản phẩm) */
-.double-chart {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 25px;
-  margin-top: 35px;
-}
-
-/* Responsive cho màn nhỏ */
 @media (max-width: 1024px) {
   .container {
     margin-left: 220px;
     max-width: calc(100% - 220px);
+  }
+}
+
+@media (max-width: 992px) {
+  .double-chart {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -255,3 +234,16 @@ button:active {
     grid-template-columns: 1fr;
   }
 }
+
+/* NÚT XUẤT BÁO CÁO */
+#export-report, #export-pdf {
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+  font-weight: 500;
+  margin-left: 5px;
+}
+#export-report { background: #28a745; }
+#export-pdf { background: #d63031; }
