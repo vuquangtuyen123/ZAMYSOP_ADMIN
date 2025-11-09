@@ -1,3 +1,7 @@
+// Danh mục module specific scripts
+document.addEventListener('DOMContentLoaded', () => {
+    // Reserved for category interactions
+});
 /**
  * JavaScript cho trang quản lý danh mục
  * Chứa các chức năng: Live search, xóa danh mục, animations

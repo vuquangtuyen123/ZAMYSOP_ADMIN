@@ -1,5 +1,4 @@
 <?php
-
 include __DIR__ . '/../menu.php'; ?>
 <link rel="stylesheet" href="assets/css/banner.css">
 <link rel="stylesheet" href="assets/css/dashboard-tiengviet.css">
@@ -26,9 +25,13 @@ include __DIR__ . '/../menu.php'; ?>
                             <input type="checkbox" class="toggle-banner-status" data-id="<?= $item['ma_banner'] ?>" <?= $item['trang_thai'] ? 'checked' : '' ?>>
                             <span class="slider"></span>
                         </label>
+
+                        <?php if (can('banner.delete')): // chỉ hiện nút xóa nếu có quyền ?>
                         <a href="index.php?c=banner&a=xoa&ma_banner=<?= $item['ma_banner'] ?>" class="delete-banner" onclick="return confirm('Bạn có chắc muốn xóa banner này?')">
                             <i class="fas fa-trash"></i>
                         </a>
+                        <?php endif; ?>
+
                         <div class="banner-date">
                             <i class="fa-regular fa-calendar"></i>
                             <?= isset($item['ngay_tao']) ? date('d/m/Y H:i', strtotime($item['ngay_tao'])) : '' ?>

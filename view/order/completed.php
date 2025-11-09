@@ -1,3 +1,11 @@
+<?php include __DIR__ . '/../menu.php'; ?>
+<link rel="stylesheet" href="assets/css/dashboard-tiengviet.css">
+<link rel="stylesheet" href="assets/css/orders.css">
+<link rel="stylesheet" href="assets/css/pagination.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="assets/js/dashboard.js"></script>
+<script src="assets/js/danhmuc.js"></script>
+<script src="assets/js/order.js"></script>
 
 <head>
     <meta charset="UTF-8">
@@ -36,18 +44,19 @@
                         <th>Ngày giao</th>
                         <th>Tổng tiền</th>
                         <th>Trạng thái</th>
+                        <th>Nhân viên xử lý</th>
                         <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($orders as $order): 
-                        $statusId = $order['ma_trang_thai_don_hang'];
+                        $statusId = $order['ma_trang_thai_don_hang'] ?? 0;
                         $statusName = $order['order_statuses']['ten_trang_thai'] ?? '—';
                     ?>
-                    <tr data-order-id="<?= $order['ma_don_hang'] ?>">
-                        <td>#<?= $order['ma_don_hang'] ?></td>
+                    <tr data-order-id="<?= $order['ma_don_hang'] ?? 0 ?>">
+                        <td>#<?= $order['ma_don_hang'] ?? 0 ?></td>
                         <td><?= htmlspecialchars($order['users']['ten_nguoi_dung'] ?? 'Khách lẻ') ?></td>
-                        <td><?= date('d/m/Y H:i', strtotime($order['ngay_dat_hang'])) ?></td>
+                        <td><?= !empty($order['ngay_dat_hang']) ? date('d/m/Y H:i', strtotime($order['ngay_dat_hang'])) : '—' ?></td>
                         <td>
                             <?php if (!empty($order['ngay_giao_hang'])): ?>
                                 <span style="color:green; font-weight:600;"><?= date('d/m/Y H:i', strtotime($order['ngay_giao_hang'])) ?></span>
@@ -55,10 +64,16 @@
                                 <em style="color:#999">Chưa cập nhật</em>
                             <?php endif; ?>
                         </td>
-                        <td><?= number_format($order['tong_gia_tri_don_hang']) ?>đ</td>
+                        <td><?= number_format($order['tong_gia_tri_don_hang'] ?? 0) ?>đ</td>
                         <td><span class="trang-thai status-<?= $statusId ?>"><?= $statusName ?></span></td>
                         <td>
-                            <button class="nut-xem" data-id="<?= $order['ma_don_hang'] ?>">Xem</button>
+                            <?php 
+                                $maNhanVien = $order['ma_nhan_vien_xu_ly'] ?? null;
+                                echo $maNhanVien ? 'ID: ' . $maNhanVien : '<em style="color:#999;">Chưa xử lý</em>';
+                            ?>
+                        </td>
+                        <td>
+                            <button class="nut-xem" data-id="<?= $order['ma_don_hang'] ?? 0 ?>">Xem</button>
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -66,9 +81,11 @@
             </table>
 
             <?php if ($totalPages > 1): ?>
-            <div class="phan-trang">
+            <div class="phan-trang" style="margin-top:40px; margin-bottom:40px; text-align:center;">
                 <?php
                 $url = "index.php?c=order&a=completed";
+                $code = trim($_GET['code'] ?? '');
+                $customer = trim($_GET['customer'] ?? '');
                 $url .= $code ? "&code=" . urlencode($code) : '';
                 $url .= $customer ? "&customer=" . urlencode($customer) : '';
                 ?>
@@ -88,12 +105,3 @@
         <div id="popup-body"></div>
     </div>
 </div>
-
-<!-- TÁCH JS + CSS -->
-<link rel="stylesheet" href="assets/css/orders.css">
-<script src="assets/js/order.js"></script>
-<?php include __DIR__ . '/../menu.php'; ?>
-<link rel="stylesheet" href="assets/css/dashboard-tiengviet.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script src="assets/js/dashboard.js"></script>
-<script src="assets/js/danhmuc.js"></script>

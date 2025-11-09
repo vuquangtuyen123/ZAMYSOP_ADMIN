@@ -1,0 +1,1 @@
+INSERT INTO "public"."order_statuses" ("ma_trang_thai_don_hang", "ten_trang_thai", "trang_thai_kich_hoat") VALUES ('1', 'Chờ xác nhận', 'true'), ('2', 'Đã xác nhận', 'true'), ('3', 'Đang giao hàng', 'true'), ('4', 'Đã giao hàng', 'true'), ('5', 'Đã hủy', 'true'), ('6', 'Đã trả hàng', 'true');

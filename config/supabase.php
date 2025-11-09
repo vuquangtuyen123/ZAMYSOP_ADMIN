@@ -43,11 +43,16 @@ function supabase_request($method, $endpoint, $params = [], $body = null) {
 
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    $headers = [
         "apikey: $SUPABASE_KEY",
         "Authorization: Bearer $SUPABASE_KEY",
         "Content-Type: application/json"
-    ]);
+    ];
+    // Yêu cầu trả về bản ghi sau khi POST/PATCH để lấy ID
+    if (in_array(strtoupper($method), ['POST','PATCH','PUT'])) {
+        $headers[] = 'Prefer: return=representation';
+    }
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
     if ($method !== 'GET') {
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
@@ -64,18 +69,34 @@ function supabase_request($method, $endpoint, $params = [], $body = null) {
     }
 
     $decoded_response = json_decode($response, true);
+    
+    // Nếu json_decode trả về null và response không rỗng, có thể là lỗi parse
+    if ($decoded_response === null && !empty($response) && json_last_error() !== JSON_ERROR_NONE) {
+        error_log("JSON decode error: " . json_last_error_msg() . " | Response: " . substr($response, 0, 200));
+        return [
+            'error' => true,
+            'message' => 'JSON decode error: ' . json_last_error_msg(),
+            'data' => []
+        ];
+    }
+    
     if ($http_code >= 400) {
         return [
             'error' => true,
-            'message' => 'HTTP Error: ' . $http_code,
-            'data' => $decoded_response ?: []
+            'message' => (is_array($decoded_response) && isset($decoded_response['message'])) ? $decoded_response['message'] : ('HTTP Error: ' . $http_code),
+            'data' => []
         ];
+    }
+
+    // Đảm bảo data luôn là array
+    if (!is_array($decoded_response)) {
+        $decoded_response = [];
     }
 
     return [
         'error' => false,
         'status' => $http_code,
-        'data' => $decoded_response ?: []
+        'data' => $decoded_response
     ];
 }
 

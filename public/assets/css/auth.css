@@ -1,0 +1,11 @@
+.auth-container { max-width: 480px; margin: 24px auto; background: #fff; border: 1px solid #eee; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+.auth-container .noi-dung-dashboard { padding: 20px; }
+.auth-container h3 { margin: 0 0 12px; font-size: 18px; }
+.auth-note { color: #6c757d; margin-bottom: 12px; }
+.form-them .form-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.form-them .form-row label { font-weight: 600; color: #333; }
+.form-them .form-row input[type="password"] { padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; outline: none; }
+.form-actions { display: flex; gap: 10px; margin-top: 8px; }
+.them-moi-btn { background: #2196F3; color: #fff; border: none; padding: 10px 14px; border-radius: 6px; cursor: pointer; }
+.all-btn { display: inline-block; padding: 10px 14px; border: 1px solid #ddd; border-radius: 6px; text-decoration: none; color: #333; }
+

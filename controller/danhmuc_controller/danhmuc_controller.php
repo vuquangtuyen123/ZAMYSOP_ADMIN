@@ -43,6 +43,8 @@ class DanhmucController {
      * 2. Lấy danh sách danh mục từ Supabase
      * 3. Include view danh mục
      */
+    private $itemsPerPage = 8;
+
     public function index() {
         // Kiểm tra đăng nhập (tương tự dashboard)
         if (!isset($_SESSION['user_id'])) {
@@ -50,8 +52,13 @@ class DanhmucController {
             exit();
         }
         
-        // Lấy danh sách danh mục từ Supabase
-        $ketQuaDanhMuc = $this->categoryModel->layTatCaDanhMuc();
+        $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+        $offset = ($page - 1) * $this->itemsPerPage;
+        $total = $this->categoryModel->getTotalDanhMuc();
+        $totalPages = max(1, ceil($total / $this->itemsPerPage));
+        
+        // Lấy danh sách danh mục từ Supabase với pagination
+        $ketQuaDanhMuc = $this->categoryModel->layTatCaDanhMuc($this->itemsPerPage, $offset);
         
         // Truyền dữ liệu cho view
         $danhSachDanhMuc = $ketQuaDanhMuc['data'];

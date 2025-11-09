@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../model/comment_model.php';
+require_once __DIR__ . '/../config/auth.php';
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 
 class CommentController {
@@ -10,6 +11,7 @@ class CommentController {
     }
 
     public function index() {
+        require_login();
         $filter = $_GET['filter'] ?? 'all';
         $rating = $_GET['rating'] ?? null;
         $reply_status = $_GET['reply_status'] ?? null;
@@ -140,6 +142,8 @@ class CommentController {
     }
 
     public function reply() {
+        require_login();
+        if (!(can('comment.moderate') || can('comment.reply'))) { http_response_code(403); echo 'Không có quyền.'; exit; }
         $toast_message = 'Phản hồi thành công';
         $toast_type = 'success';
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['reply'])) {
@@ -164,6 +168,8 @@ class CommentController {
     }
 
     public function change_status() {
+        require_login();
+        require_capability('comment.moderate');
         $id = $_GET['review_id'] ?? null;
         $status = $_GET['status'] ?? null;
         $toast_message = '';
@@ -195,6 +201,8 @@ class CommentController {
     }
 
     public function delete_all() {
+        require_login();
+        require_capability('comment.moderate');
         $result = $this->model->deleteAllReviews();
         $toast_message = $result['error'] ? ($result['message'] ?: 'Xóa tất cả thất bại') : 'Đã xóa tất cả đánh giá';
         $toast_type = $result['error'] ? 'error' : 'success';

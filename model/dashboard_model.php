@@ -157,68 +157,84 @@ class DashboardModel {
     /**
      * === 3. LẤY DOANH THU THEO DANH MỤC ===
      * Tính doanh thu theo danh mục sản phẩm, bỏ qua đơn hủy/hoàn.
+     * Phân bổ doanh thu từ tong_gia_tri_don_hang theo tỷ lệ thanh_tien của từng danh mục.
      */
     public static function layDoanhThuTheoDanhMuc(?string $loaiLoc = null, ?string $giaTri = null): array {
-        // Gọi nhiều bảng từ Supabase
-        $ordersRes   = supabase_request('GET', 'orders', ['select' => 'ma_don_hang, ngay_dat_hang, tong_gia_tri_don_hang, ma_trang_thai_don_hang']);
+        // Lấy dữ liệu cần thiết
+        $ordersRes   = supabase_request('GET', 'orders', ['select' => 'ma_don_hang, ngay_dat_hang, ma_trang_thai_don_hang, tong_gia_tri_don_hang']);
         $detailsRes  = supabase_request('GET', 'order_details', ['select' => 'ma_don_hang, ma_bien_the_san_pham, thanh_tien']);
         $variantsRes = supabase_request('GET', 'product_variants', ['select' => 'ma_bien_the, ma_san_pham']);
         $productsRes = supabase_request('GET', 'products', ['select' => 'ma_san_pham, ma_danh_muc']);
         $catsRes     = supabase_request('GET', 'categories', ['select' => 'ma_danh_muc, ten_danh_muc']);
 
-        // Nếu lỗi, trả mảng rỗng
         if ($ordersRes['error'] || $detailsRes['error'] || $variantsRes['error'] || $productsRes['error'] || $catsRes['error']) {
             return [];
         }
 
-        // Chuẩn bị map dữ liệu
-        $orders     = $ordersRes['data'];
-        $details    = $detailsRes['data'];
-        $variantMap = array_column($variantsRes['data'], 'ma_san_pham', 'ma_bien_the');
-        $productMap = array_column($productsRes['data'], 'ma_danh_muc', 'ma_san_pham');
-        $catMap     = array_column($catsRes['data'], 'ten_danh_muc', 'ma_danh_muc');
-
-        // Gom chi tiết theo mã đơn
-        $byOrder = [];
-        foreach ($details as $d) {
-            $byOrder[$d['ma_don_hang']][] = $d;
+        // Lọc danh sách đơn hợp lệ (không hủy/hoàn và đúng bộ lọc thời gian)
+        $validOrders = [];
+        foreach ($ordersRes['data'] as $o) {
+            if (!self::donHangHopLe($o, $loaiLoc, $giaTri)) continue;
+            $status = (int)($o['ma_trang_thai_don_hang'] ?? 0);
+            if (in_array($status, [5, 6])) continue;
+            $validOrders[(int)$o['ma_don_hang']] = (float)($o['tong_gia_tri_don_hang'] ?? 0);
         }
 
+        // Map: biến thể -> sản phẩm, sản phẩm -> danh mục, danh mục -> tên
+        $variantToProduct = array_column($variantsRes['data'], 'ma_san_pham', 'ma_bien_the');
+        $productToCat     = array_column($productsRes['data'], 'ma_danh_muc', 'ma_san_pham');
+        $catNameById      = array_column($catsRes['data'], 'ten_danh_muc', 'ma_danh_muc');
+
+        // Tính tổng thanh_tien theo danh mục cho mỗi đơn hàng
+        $orderDetailsByCat = []; // [orderId][catName] = tổng thanh_tien
+        $orderTotalDetails = [];  // [orderId] = tổng thanh_tien của tất cả chi tiết
+        
+        foreach ($detailsRes['data'] as $d) {
+            $orderId = (int)($d['ma_don_hang'] ?? 0);
+            if (!isset($validOrders[$orderId])) continue;
+
+            $variantId = $d['ma_bien_the_san_pham'] ?? null;
+            $productId = $variantId !== null ? ($variantToProduct[$variantId] ?? null) : null;
+            if ($productId === null) continue;
+
+            $catId = $productToCat[$productId] ?? null;
+            if ($catId === null) continue;
+
+            $catName = $catNameById[$catId] ?? null;
+            if ($catName === null) continue;
+
+            $amount = (float)($d['thanh_tien'] ?? 0);
+            if ($amount <= 0) continue;
+
+            if (!isset($orderDetailsByCat[$orderId])) {
+                $orderDetailsByCat[$orderId] = [];
+                $orderTotalDetails[$orderId] = 0;
+            }
+            $orderDetailsByCat[$orderId][$catName] = ($orderDetailsByCat[$orderId][$catName] ?? 0) + $amount;
+            $orderTotalDetails[$orderId] += $amount;
+        }
+
+        // Phân bổ tong_gia_tri_don_hang theo tỷ lệ thanh_tien của từng danh mục
         $catTotals = [];
-        foreach ($orders as $o) {
-            if (!self::donHangHopLe($o, $loaiLoc, $giaTri)) continue;
-            if (in_array($o['ma_trang_thai_don_hang'] ?? 0, [5, 6])) continue; // bỏ đơn hủy/hoàn
-
-            $id = $o['ma_don_hang'];
-            $rows = $byOrder[$id] ?? [];
-            $totalOrder = (float)$o['tong_gia_tri_don_hang'];
-
-            // Nếu không có chi tiết, gộp vào "Khác"
-            if (empty($rows)) {
-                $catTotals['Khác'] = ($catTotals['Khác'] ?? 0) + $totalOrder;
+        foreach ($validOrders as $orderId => $tongGiaTriDon) {
+            if (!isset($orderDetailsByCat[$orderId]) || $orderTotalDetails[$orderId] <= 0) {
+                // Nếu đơn không có chi tiết hoặc tổng chi tiết = 0, bỏ qua
                 continue;
             }
 
-            // Tính tỉ lệ giữa tổng chi tiết và tổng đơn để phân bổ doanh thu
-            $totalDetails = 0;
-            foreach ($rows as $r) $totalDetails += (float)($r['thanh_tien'] ?? 0);
-            if ($totalDetails <= 0) $totalDetails = $totalOrder;
-            $ratio = $totalOrder / $totalDetails;
-
-            // Phân bổ doanh thu vào từng danh mục
-            foreach ($rows as $r) {
-                $maSP = $variantMap[$r['ma_bien_the_san_pham']] ?? null;
-                $maDM = $maSP ? ($productMap[$maSP] ?? null) : null;
-                $tenDM = $maDM ? ($catMap[$maDM] ?? 'Khác') : 'Khác';
-                $catTotals[$tenDM] = ($catTotals[$tenDM] ?? 0) + ((float)($r['thanh_tien'] ?? 0) * $ratio);
+            $tongChiTiet = $orderTotalDetails[$orderId];
+            foreach ($orderDetailsByCat[$orderId] as $catName => $thanhTienCat) {
+                // Phân bổ theo tỷ lệ: (thanh_tien của danh mục / tổng thanh_tien) * tong_gia_tri_don_hang
+                $tyLe = $thanhTienCat / $tongChiTiet;
+                $doanhThuCat = $tongGiaTriDon * $tyLe;
+                $catTotals[$catName] = ($catTotals[$catName] ?? 0) + $doanhThuCat;
             }
         }
 
-        // Sắp xếp giảm dần theo doanh thu
         arsort($catTotals);
         $out = [];
-        foreach ($catTotals as $k => $v) {
-            $out[] = ['ten_danh_muc' => $k, 'doanh_thu' => (int)round($v)];
+        foreach ($catTotals as $name => $v) {
+            $out[] = ['ten_danh_muc' => $name, 'doanh_thu' => (int)round($v)];
         }
         return $out;
     }
@@ -353,5 +369,156 @@ class DashboardModel {
         }
         return $out;
     }
+
+/**
+ * === 8. LẤY CẢNH BÁO HÔM NAY (CÓ NGÀY HIỆN TẠI) ===
+ */
+public static function layCanhBaoHomNay(): ?array {
+    $today = date('Y-m-d');
+    $ngayHienThi = date('d/m/Y'); // Định dạng: 09/11/2025
+
+    $res = supabase_request('GET', 'orders', [
+        'select' => 'ma_don_hang, ma_trang_thai_don_hang, ngay_dat_hang'
+    ]);
+
+    if ($res['error'] || !is_array($res['data'])) {
+        return null;
+    }
+
+    $donHuyIds = [];
+    $donHoanIds = [];
+    $donHuy = 0;
+    $donHoan = 0;
+
+    foreach ($res['data'] as $o) {
+        $ngayRaw = $o['ngay_dat_hang'] ?? '';
+        if (!$ngayRaw) continue;
+
+        try {
+            $dt = new DateTime(substr($ngayRaw, 0, 10));
+            if ($dt->format('Y-m-d') !== $today) continue;
+        } catch (Exception $e) {
+            continue;
+        }
+
+        $maTrangThai = (int)($o['ma_trang_thai_don_hang'] ?? 0);
+
+        if ($maTrangThai === 5) {
+            $donHuy++;
+            $donHuyIds[] = (int)$o['ma_don_hang'];
+        } elseif ($maTrangThai === 6) {
+            $donHoan++;
+            $donHoanIds[] = (int)$o['ma_don_hang'];
+        }
+    }
+
+    $canhBao = ['ngay' => $ngayHienThi]; // Thêm ngày
+
+    // HOÀN >= 3
+    if ($donHoan >= 3) {
+        $detailsRes = supabase_request('GET', 'order_details', [
+            'select' => 'ma_don_hang, ma_bien_the_san_pham, so_luong_mua'
+        ]);
+        $variantsRes = supabase_request('GET', 'product_variants', ['select' => 'ma_bien_the, ma_san_pham']);
+        $productsRes = supabase_request('GET', 'products', ['select' => 'ma_san_pham, ten_san_pham']);
+
+        if (!$detailsRes['error'] && !$variantsRes['error'] && !$productsRes['error']) {
+            $variantMap = array_column($variantsRes['data'], 'ma_san_pham', 'ma_bien_the');
+            $productMap = array_column($productsRes['data'], 'ten_san_pham', 'ma_san_pham');
+
+            $sanPhamHoan = [];
+            foreach ($detailsRes['data'] as $d) {
+                $orderId = (int)($d['ma_don_hang'] ?? 0);
+                if (!in_array($orderId, $donHoanIds)) continue;
+
+                $variantId = $d['ma_bien_the_san_pham'] ?? null;
+                $productId = $variantId !== null ? ($variantMap[$variantId] ?? null) : null;
+                if (!$productId) continue;
+
+                $tenSP = $productMap[$productId] ?? 'Không rõ';
+                $soLuong = (int)($d['so_luong_mua'] ?? 0);
+                $sanPhamHoan[$tenSP] = ($sanPhamHoan[$tenSP] ?? 0) + $soLuong;
+            }
+
+            if (!empty($sanPhamHoan)) {
+                $canhBao['hoan'] = [
+                    'san_pham_hoan' => $sanPhamHoan,
+                    'tong_don_hoan' => $donHoan
+                ];
+            }
+        }
+    }
+
+    // HỦY >= 3
+    if ($donHuy >= 3) {
+        $canhBao['huy'] = [
+            'so_luong' => $donHuy
+        ];
+    }
+
+    return !empty($canhBao) && (isset($canhBao['hoan']) || isset($canhBao['huy'])) ? $canhBao : null;
+}
+    /**
+ * === 8. THỐNG KÊ TẤT CẢ SỐ LƯỢNG BÁN RA THEO MÃ & TÊN SẢN PHẨM ===
+ */
+public static function laySoLuongBanRaTheoSanPham(?string $loaiLoc = null, ?string $giaTri = null): array {
+    $detailsRes = supabase_request('GET', 'order_details', ['select' => 'ma_don_hang, ma_bien_the_san_pham, so_luong_mua']);
+    $variantsRes = supabase_request('GET', 'product_variants', ['select' => 'ma_bien_the, ma_san_pham']);
+    $productsRes = supabase_request('GET', 'products', ['select' => 'ma_san_pham, ten_san_pham']);
+    $ordersRes = supabase_request('GET', 'orders', ['select' => 'ma_don_hang, ma_trang_thai_don_hang, ngay_dat_hang']);
+
+    if ($detailsRes['error'] || $variantsRes['error'] || $productsRes['error'] || $ordersRes['error']) {
+        return [];
+    }
+
+    $variantToProduct = array_column($variantsRes['data'], 'ma_san_pham', 'ma_bien_the');
+    $productMap = array_column($productsRes['data'], 'ten_san_pham', 'ma_san_pham');
+
+    // Lọc đơn hợp lệ
+    $validOrders = [];
+    foreach ($ordersRes['data'] as $o) {
+        if (!self::donHangHopLe($o, $loaiLoc, $giaTri)) continue;
+        if (in_array($o['ma_trang_thai_don_hang'], [5, 6])) continue;
+        $validOrders[$o['ma_don_hang']] = true;
+    }
+
+    $sales = [];
+    $tongSoLuongBan = 0; // TÍNH TỔNG SỐ LƯỢNG BÁN
+
+    foreach ($detailsRes['data'] as $d) {
+        if (!isset($validOrders[$d['ma_don_hang']])) continue;
+
+        $variantId = $d['ma_bien_the_san_pham'] ?? null;
+        $productId = $variantId !== null ? ($variantToProduct[$variantId] ?? null) : null;
+        if (!$productId) continue;
+
+        $tenSP = $productMap[$productId] ?? 'Không rõ';
+        $maSP = $productId; // LẤY TRỰC TIẾP TỪ CSDL
+
+        $sl = (int)($d['so_luong_mua'] ?? 0);
+        $key = "$maSP|$tenSP";
+
+        $sales[$key] = ($sales[$key] ?? 0) + $sl;
+        $tongSoLuongBan += $sl; // CỘNG DỒN TỔNG
+    }
+
+    // Chuẩn hóa kết quả
+    $result = [];
+    foreach ($sales as $key => $sl) {
+        [$maSP, $tenSP] = explode('|', $key, 2);
+        $result[] = [
+            'ma_san_pham' => (int)$maSP,
+            'ten_san_pham' => $tenSP,
+            'so_luong_ban' => $sl
+        ];
+    }
+
+    usort($result, fn($a, $b) => $b['so_luong_ban'] <=> $a['so_luong_ban']);
+
+    // GẮN THÊM TỔNG SỐ LƯỢNG VÀO KẾT QUẢ
+    $result['tong_cong'] = $tongSoLuongBan;
+
+    return $result;
+}
 }
 ?>

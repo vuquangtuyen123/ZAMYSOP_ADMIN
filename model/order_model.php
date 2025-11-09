@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../config/supabase.php';
 
 class OrderModel {
@@ -6,8 +7,14 @@ class OrderModel {
     // ==================== DANH SÁCH ĐƠN HÀNG ====================
     public function searchOrders($code = '', $customer = '', $status = '', $page = 1, $limit = 10) {
         $offset = ($page - 1) * $limit;
+        // Dùng inner join khi lọc theo tên khách hàng để PostgREST áp dụng filter trên bảng liên kết
+        // Chỉ định rõ foreign key: users!orders_ma_nguoi_dung_fkey để tránh lỗi ambiguous relationship
+        $select = $customer !== ''
+            ? '*,users!orders_ma_nguoi_dung_fkey!inner(ten_nguoi_dung,so_dien_thoai),order_statuses(ten_trang_thai)'
+            : '*,users!orders_ma_nguoi_dung_fkey(ten_nguoi_dung,so_dien_thoai),order_statuses(ten_trang_thai)';
+
         $params = [
-            'select' => '*,users(ten_nguoi_dung,so_dien_thoai),order_statuses(ten_trang_thai)',
+            'select' => $select,
             'order' => 'ngay_dat_hang.desc',
             'offset' => $offset,
             'limit' => $limit
@@ -20,30 +27,29 @@ class OrderModel {
         return supabase_request('GET', 'orders', $params);
     }
 
-    // Đếm tổng số bản ghi để hiển thị phân trang
+    // Đếm tổng số bản ghi để hiển thị phân trang (dùng GET để đếm)
     public function countSearchOrders($code = '', $customer = '', $status = '') {
-        $params = [];
+        $select = $customer !== ''
+            ? 'ma_don_hang,users!orders_ma_nguoi_dung_fkey!inner(ten_nguoi_dung)'
+            : 'ma_don_hang,users!orders_ma_nguoi_dung_fkey(ten_nguoi_dung)';
+
+        $params = [ 'select' => $select ];
         if ($code !== '') $params['ma_don_hang'] = "eq.$code";
         if ($customer !== '') $params['users.ten_nguoi_dung'] = "ilike.*$customer*";
         if ($status !== '' && is_numeric($status)) $params['ma_trang_thai_don_hang'] = "eq.$status";
 
-        $response = supabase_request('HEAD', 'orders', $params);
-        if ($response['error'] || empty($response['status_headers']['content-range'])) {
-            return 0;
-        }
-
-        // Lấy phần sau dấu "/" trong "0-9/45"
-        if (preg_match('/\/(\d+)$/', $response['status_headers']['content-range'], $matches)) {
-            return (int)$matches[1];
-        }
-
-        return 0;
+        $response = supabase_request('GET', 'orders', $params);
+        return $response['error'] ? 0 : count($response['data']);
     }
 
     public function searchByStatus($statusId, $code = '', $customer = '', $page = 1, $limit = 10) {
         $offset = ($page - 1) * $limit;
+        $select = $customer !== ''
+            ? '*,users!orders_ma_nguoi_dung_fkey!inner(ten_nguoi_dung,so_dien_thoai),order_statuses(ten_trang_thai)'
+            : '*,users!orders_ma_nguoi_dung_fkey(ten_nguoi_dung,so_dien_thoai),order_statuses(ten_trang_thai)';
+
         $params = [
-            'select' => '*,users(ten_nguoi_dung,so_dien_thoai),order_statuses(ten_trang_thai)',
+            'select' => $select,
             'ma_trang_thai_don_hang' => "eq.$statusId",
             'order' => 'ngay_dat_hang.desc',
             'offset' => $offset,
@@ -52,31 +58,28 @@ class OrderModel {
 
         if ($code !== '') $params['ma_don_hang'] = "eq.$code";
         if ($customer !== '') $params['users.ten_nguoi_dung'] = "ilike.*$customer*";
+        
         return supabase_request('GET', 'orders', $params);
     }
 
-    //  Chỉnh cho phân trang theo trạng thái
+    //  Đếm cho phân trang theo trạng thái (dùng GET để đếm)
     public function countByStatusWithSearch($statusId, $code = '', $customer = '') {
-        $params = ['ma_trang_thai_don_hang' => "eq.$statusId"];
+        $select = $customer !== ''
+            ? 'ma_don_hang,users!orders_ma_nguoi_dung_fkey!inner(ten_nguoi_dung)'
+            : 'ma_don_hang,users!orders_ma_nguoi_dung_fkey(ten_nguoi_dung)';
+
+        $params = [ 'select' => $select, 'ma_trang_thai_don_hang' => "eq.$statusId" ];
         if ($code !== '') $params['ma_don_hang'] = "eq.$code";
         if ($customer !== '') $params['users.ten_nguoi_dung'] = "ilike.*$customer*";
 
-        $response = supabase_request('HEAD', 'orders', $params);
-        if ($response['error'] || empty($response['status_headers']['content-range'])) {
-            return 0;
-        }
-
-        if (preg_match('/\/(\d+)$/', $response['status_headers']['content-range'], $matches)) {
-            return (int)$matches[1];
-        }
-
-        return 0;
+        $response = supabase_request('GET', 'orders', $params);
+        return $response['error'] ? 0 : count($response['data']);
     }
 
     // ==================== CHI TIẾT ĐƠN HÀNG ====================
     public function getByIdFull($maDonHang) {
         $params = [
-            'select' => '*,users(*),order_statuses(*)',
+            'select' => '*,users!orders_ma_nguoi_dung_fkey(*),order_statuses(*)',
             'ma_don_hang' => "eq.$maDonHang"
         ];
         $response = supabase_request('GET', 'orders', $params);
@@ -86,14 +89,25 @@ class OrderModel {
         return ['error' => false, 'data' => $response['data'][0]];
     }
 
-    public function getOrderDetails($maDonHang) {
-        $params = [
-            'select' => 'ma_chi_tiet_don_hang, ma_don_hang, so_luong_mua, thanh_tien, ma_bien_the, ten_san_pham, ten_size, ten_mau, duong_dan_anh',
-            'ma_don_hang' => "eq.$maDonHang",
-            'order' => 'ma_chi_tiet_don_hang.asc'
-        ];
-        return supabase_request('GET', 'v_order_details_full', $params);
-    }
+   public function getOrderDetails($maDonHang) {
+    $params = [
+        'select' => '
+            ma_chi_tiet_don_hang,
+            ma_don_hang,
+            so_luong_mua,
+            thanh_tien,
+            ma_bien_the,
+            ma_san_pham,
+            ten_san_pham,
+            ten_size,
+            ten_mau,
+            duong_dan_anh
+        ',
+        'ma_don_hang' => "eq.$maDonHang",
+        'order' => 'ma_chi_tiet_don_hang.asc'
+    ];
+    return supabase_request('GET', 'v_order_details_full', $params);
+}
 
     public function getStatuses() {
         $params = ['trang_thai_kich_hoat' => 'eq.true', 'order' => 'ma_trang_thai_don_hang'];
@@ -101,8 +115,18 @@ class OrderModel {
     }
 
     // ==================== CẬP NHẬT TRẠNG THÁI + CỘNG TỒN KHO ====================
-    public function updateStatus($maDonHang, $statusId, $autoDelivery = false) {
+    public function updateStatus($maDonHang, $statusId, $autoDelivery = false, $lyDoHuy = '', $staffId = null) {
         $body = ['ma_trang_thai_don_hang' => $statusId];
+
+        // Lưu lý do hủy nếu có (chỉ khi hủy đơn - statusId = 5)
+        if ($statusId == 5 && !empty($lyDoHuy)) {
+            $body['ly_do_huy_hoan_hang'] = $lyDoHuy;
+        }
+
+        // Lưu ID nhân viên xử lý khi cập nhật trạng thái
+        if ($staffId !== null && $staffId > 0) {
+            $body['ma_nhan_vien_xu_ly'] = $staffId;
+        }
 
         // Lưu đúng giờ Việt Nam (UTC+7)
         if ($statusId == 4 && $autoDelivery) {
@@ -168,9 +192,35 @@ class OrderModel {
                     }
                 }
             }
+
+            // Tạo notification cho user khi admin chấp nhận đổi trả hàng (statusId = 6)
+            if ($statusId == 6) {
+                // Lấy thông tin đơn hàng để lấy user ID
+                $orderInfo = supabase_request('GET', 'orders', [
+                    'select' => 'ma_don_hang,ma_nguoi_dung',
+                    'ma_don_hang' => "eq.$maDonHang",
+                    'limit' => 1
+                ]);
+                
+                if (!$orderInfo['error'] && !empty($orderInfo['data'])) {
+                    $maNguoiDung = $orderInfo['data'][0]['ma_nguoi_dung'] ?? null;
+                    if ($maNguoiDung) {
+                        $notificationData = [
+                            'ma_nguoi_dung' => $maNguoiDung,
+                            'tieu_de' => 'Đơn hàng đã được chấp nhận đổi trả',
+                            'noi_dung' => "Đơn hàng #$maDonHang của bạn đã được admin chấp nhận đổi trả. Số tiền sẽ được hoàn lại trong thời gian sớm nhất.",
+                            'loai_thong_bao' => 'order',
+                            'ma_don_hang' => $maDonHang,
+                            'da_doc' => false
+                        ];
+                        supabase_request('POST', 'notifications', [], $notificationData);
+                    }
+                }
+            }
         }
 
         return ['error' => false, 'message' => 'Cập nhật thành công'];
     }
 }
+
 ?>

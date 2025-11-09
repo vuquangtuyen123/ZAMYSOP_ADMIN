@@ -10,6 +10,8 @@
     
     <!-- CSS riêng cho trang danh mục -->
     <link rel="stylesheet" href="assets/css/category.css">
+    <link rel="stylesheet" href="assets/css/danhmuc.css">
+    <link rel="stylesheet" href="assets/css/pagination.css">
     
     <!-- Font Awesome cho icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -99,10 +101,13 @@
                                            class="nut-thao-tac sua" title="Sửa danh mục">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <button class="nut-thao-tac xoa" title="Xóa danh mục" 
-                                                onclick="xoaDanhMuc(<?= $danhMuc['ma_danh_muc'] ?>)">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                        <?php if (can('product.crud')): ?>
+<button class="nut-thao-tac xoa" title="Xóa danh mục" 
+        onclick="xoaDanhMuc(<?= $danhMuc['ma_danh_muc'] ?>)">
+    <i class="fas fa-trash"></i>
+</button>
+<?php endif; ?>
+
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>
@@ -117,6 +122,18 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Phân trang -->
+                <?php if (isset($totalPages) && $totalPages > 1): ?>
+                    <div class="pagination">
+                        <?php $prevPage = $page > 1 ? $page - 1 : 1; $nextPage = $page < $totalPages ? $page + 1 : $totalPages; ?>
+                        <a href="index.php?c=danhmuc&a=index&page=<?= $prevPage ?>" class="<?= $page <= 1 ? 'disabled' : '' ?>">&lt;</a>
+                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                            <a href="index.php?c=danhmuc&a=index&page=<?= $i ?>" class="<?= $i === $page ? 'active' : '' ?>"><?= $i ?></a>
+                        <?php endfor; ?>
+                        <a href="index.php?c=danhmuc&a=index&page=<?= $nextPage ?>" class="<?= $page >= $totalPages ? 'disabled' : '' ?>">&gt;</a>
+                    </div>
+                <?php endif; ?>
             </div>
         </main>
     </div>

@@ -85,6 +85,29 @@ body {
     font-size: 13px;
 }
 
+/* Notification badge */
+.menu-dieu-huong a {
+    position: relative;
+}
+
+.notification-badge {
+    display: inline-block;
+    background: #e74c3c;
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: auto;
+    min-width: 18px;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.notification-badge:empty {
+    display: none;
+}
+
 .muc-menu > span {
     display: block;
     padding: 10px 12px 6px;
@@ -139,7 +162,7 @@ body {
 }
 
 .menu-con.hien-thi {
-    max-height: 120px;
+    max-height: 300px;
     opacity: 1;
 }
 

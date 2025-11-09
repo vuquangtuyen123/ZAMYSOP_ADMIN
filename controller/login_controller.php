@@ -11,6 +11,7 @@
 
 // Import model xử lý đăng nhập
 require_once __DIR__ . '/../model/login_model.php';
+require_once __DIR__ . '/../model/user_model.php';
 
 /**
  * Class LoginController - Controller xử lý xác thực
@@ -27,6 +28,7 @@ class LoginController {
      * @var LoginModel Instance của LoginModel để xử lý logic nghiệp vụ đăng nhập
      */
     private $loginModel;
+    private $userModel;
 
     /**
      * Constructor - Khởi tạo controller
@@ -35,6 +37,8 @@ class LoginController {
      */
     public function __construct() {
         $this->loginModel = new LoginModel();
+        $this->userModel  = new UserModel();
+        if (session_status() === PHP_SESSION_NONE) session_start();
     }
 
     /**
@@ -70,14 +74,26 @@ class LoginController {
 
             // Nếu đăng nhập thành công
             if ($user) {
+                // Nếu cần bắt đổi mật khẩu (đang dùng mật khẩu mặc định = email)
+                if (!empty($user['require_password_change'])) {
+                    $_SESSION['pending_change_user_id'] = $user['id'];
+                    $_SESSION['pending_change_email'] = $user['email'];
+                    header('Location: index.php?c=login&a=changePassword');
+                    exit;
+                }
+
                 // Lưu thông tin người dùng vào session
                 $_SESSION['user_id'] = $user['id'];                    // ID người dùng
                 $_SESSION['user_name'] = $user['ten_nguoi_dung'];      // Tên hiển thị
                 $_SESSION['user_email'] = $user['email'];              // Email
-                
-                // Chuyển hướng đến trang dashboard
+                // Lưu thông tin vai trò để hệ thống phân quyền (RBAC)
+                $_SESSION['role_id'] = isset($user['ma_role']) ? (int)$user['ma_role'] : null;
+                $_SESSION['role_name'] = isset($user['ma_role'])
+                    ? ($user['ma_role'] == 1 ? 'Administrator' : ($user['ma_role'] == 2 ? 'Moderator' : 'User'))
+                    : null;
+
                 header("Location:index.php?c=dashboard&a=index");
-                exit; // Dừng thực thi để đảm bảo chuyển hướng
+                exit;
             } else {
                 // Đăng nhập thất bại, lưu thông báo lỗi
                 $error = "Sai email hoặc mật khẩu!";
@@ -86,6 +102,40 @@ class LoginController {
         
         // Hiển thị trang đăng nhập (có thể kèm thông báo lỗi)
         include __DIR__ . '/../view/login.php';
+    }
+
+    /**
+     * Bắt buộc đổi mật khẩu khi đang dùng mật khẩu mặc định (email)
+     */
+    public function changePassword() {
+        $error = '';
+        $email = $_SESSION['pending_change_email'] ?? '';
+        $userId = $_SESSION['pending_change_user_id'] ?? null;
+
+        if (!$userId) {
+            header('Location: index.php?c=login&a=login');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $new = $_POST['new_password'] ?? '';
+            $confirm = $_POST['confirm_password'] ?? '';
+            if ($new === '' || $confirm === '' || $new !== $confirm) {
+                $error = 'Mật khẩu không hợp lệ hoặc không khớp.';
+            } else {
+                $ok = $this->userModel->update($userId, ['mat_khau' => $new]);
+                if ($ok) {
+                    // Xóa trạng thái pending và yêu cầu đăng nhập lại
+                    unset($_SESSION['pending_change_user_id'], $_SESSION['pending_change_email']);
+                    header('Location: index.php?c=login&a=login');
+                    exit;
+                } else {
+                    $error = 'Không thể cập nhật mật khẩu.';
+                }
+            }
+        }
+
+        include __DIR__ . '/../view/change_password.php';
     }
 
     /**

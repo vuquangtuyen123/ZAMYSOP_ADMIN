@@ -63,8 +63,12 @@ class LoginModel {
             // Lấy thông tin user đầu tiên từ kết quả tìm kiếm
             $user = $userResponse['data'][0];
             
-            // Kiểm tra mật khẩu có khớp không
+            // Kiểm tra mật khẩu có khớp không (plain text)
             if (isset($user['mat_khau']) && $user['mat_khau'] === $password) {
+                // Nếu đang dùng mật khẩu mặc định (email) thì đánh dấu bắt đổi mật khẩu
+                if (isset($user['email']) && $user['mat_khau'] === $user['email']) {
+                    $user['require_password_change'] = true;
+                }
                 return $user; // Đăng nhập thành công, trả về thông tin user
             }
         } else {

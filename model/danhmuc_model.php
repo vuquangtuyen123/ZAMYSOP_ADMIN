@@ -28,13 +28,18 @@ class CategoryModel {
      * 
      * @return array Mảng chứa danh sách danh mục hoặc thông báo lỗi
      */
-    public function layTatCaDanhMuc() {
+    public function layTatCaDanhMuc($limit = null, $offset = 0) {
         try {
             // Gọi API Supabase để lấy tất cả danh mục
-            $ketQua = supabase_request('GET', 'categories', [
+            $params = [
                 'select' => 'ma_danh_muc,ten_danh_muc,created_at',
-                'order' => 'created_at.desc'
-            ]);
+                'order' => 'ma_danh_muc.desc'
+            ];
+            if ($limit !== null) {
+                $params['limit'] = $limit;
+                $params['offset'] = $offset;
+            }
+            $ketQua = supabase_request('GET', 'categories', $params);
             
             if ($ketQua['error']) {
                 return [
@@ -56,6 +61,29 @@ class CategoryModel {
                 'message' => 'Lỗi hệ thống: ' . $e->getMessage(),
                 'data' => []
             ];
+        }
+    }
+    
+    /**
+     * Đếm tổng số danh mục
+     * 
+     * @return int Tổng số danh mục
+     */
+    public function getTotalDanhMuc() {
+        try {
+            $ketQua = supabase_request('GET', 'categories', [
+                'select' => 'ma_danh_muc',
+                'count' => 'exact'
+            ]);
+            
+            if ($ketQua['error']) {
+                return 0;
+            }
+            
+            return isset($ketQua['count']) ? (int)$ketQua['count'] : count($ketQua['data'] ?? []);
+            
+        } catch (Exception $e) {
+            return 0;
         }
     }
     
@@ -112,7 +140,7 @@ class CategoryModel {
             $ketQua = supabase_request('GET', 'categories', [
                 'select' => 'ma_danh_muc,ten_danh_muc,created_at',
                 'ten_danh_muc' => 'ilike.*' . $tuKhoa . '*',
-                'order' => 'created_at.desc'
+                'order' => 'ma_danh_muc.desc'
             ]);
             
             if ($ketQua['error']) {

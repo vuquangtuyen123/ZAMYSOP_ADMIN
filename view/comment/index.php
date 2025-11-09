@@ -1,5 +1,8 @@
 <?php
 include __DIR__ . '/../menu.php';
+?>
+<link rel="stylesheet" href="assets/css/pagination.css">
+<?php
 $grouped_reviews = $grouped_reviews ?? [];
 $products = $products ?? [];
 $total_pages = $total_pages ?? 1;

@@ -1,7 +1,15 @@
 <?php $title = "Đơn hàng đang xử lý"; 
-// Set default timezone to Vietnam (useful for any other date() calls)
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 ?>
+<?php include __DIR__ . '/../menu.php'; ?>
+<link rel="stylesheet" href="assets/css/dashboard-tiengviet.css">
+<link rel="stylesheet" href="assets/css/orders.css">
+<link rel="stylesheet" href="assets/css/pagination.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="assets/js/dashboard.js"></script>
+<script src="assets/js/danhmuc.js"></script>
+<script src="assets/js/order.js"></script>
+
 <head>
     <meta charset="UTF-8">
     <title>Quản lý Đơn hàng</title>
@@ -36,7 +44,7 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
                         <th>Mã ĐH</th>
                         <th>Khách hàng</th>
                         <th>Ngày đặt</th>
-                        <th>Ngày giao</th> <!-- THÊM CỘT MỚI -->
+                        <th>Ngày giao</th>
                         <th>Tổng tiền</th>
                         <th>Trạng thái</th>
                         <th>Hành động</th>
@@ -44,29 +52,25 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
                 </thead>
                 <tbody>
                     <?php foreach ($orders as $order): 
-                        $statusId = $order['ma_trang_thai_don_hang'];
+                        $statusId = $order['ma_trang_thai_don_hang'] ?? 0;
                         $statusName = $order['order_statuses']['ten_trang_thai'] ?? '—';
                         $note = $order['ghi_chu'] ?? '';
                         $canReturn = stripos($note, 'yêu cầu hoàn hàng') !== false || stripos($note, 'hoàn hàng') !== false;
 
-                        // CHUYỂN GMT/UTC → VIỆT NAM (GMT+7) an toàn
-                        // 1) Ngày giao (có thể null)
+                        // CHUYỂN GMT/UTC → VIỆT NAM (GMT+7)
                         $ngayGiao = $order['ngay_giao_hang'] ?? null;
                         if ($ngayGiao) {
                             try {
                                $dtGiao = new DateTime($ngayGiao, new DateTimeZone('UTC'));
                                $dtGiao->setTimezone(new DateTimeZone('Asia/Ho_Chi_Minh'));
                             $ngayGiaoFormatted = $dtGiao->format('d/m/Y H:i');
-
                             } catch (Exception $e) {
-                                // fallback nếu parse lỗi
                                 $ngayGiaoFormatted = date('d/m/Y H:i', strtotime($ngayGiao));
                             }
                         } else {
                             $ngayGiaoFormatted = '<em style="color:#999">Chưa giao</em>';
                         }
 
-                        // 2) Ngày đặt (thường không null) — parse tương tự để đảm bảo đúng timezone
                         $ngayDat = $order['ngay_dat_hang'] ?? null;
                         if ($ngayDat) {
                             try {
@@ -80,23 +84,23 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
                             $ngayDatFormatted = '<em style="color:#999">—</em>';
                         }
                     ?>
-                    <tr data-order-id="<?= $order['ma_don_hang'] ?>">
-                        <td>#<?= $order['ma_don_hang'] ?></td>
+                    <tr data-order-id="<?= $order['ma_don_hang'] ?? 0 ?>">
+                        <td>#<?= $order['ma_don_hang'] ?? 0 ?></td>
                         <td><?= htmlspecialchars($order['users']['ten_nguoi_dung'] ?? 'Khách lẻ') ?></td>
                         <td><?= $ngayDatFormatted ?></td>
-                        <td><?= $ngayGiaoFormatted ?></td> <!-- HIỂN THỊ NGÀY GIAO -->
-                        <td><?= number_format($order['tong_gia_tri_don_hang']) ?>đ</td>
+                        <td><?= $ngayGiaoFormatted ?></td>
+                        <td><?= number_format($order['tong_gia_tri_don_hang'] ?? 0) ?>đ</td>
                         <td><span class="trang-thai status-<?= $statusId ?>"><?= $statusName ?></span></td>
                         <td>
-                            <button class="nut-xem" data-id="<?= $order['ma_don_hang'] ?>">Xem</button>
+                            <button class="nut-xem" data-id="<?= $order['ma_don_hang'] ?? 0 ?>">Xem</button>
                             <?php if ($statusId == 1): ?>
-                                <button class="nut-xac-nhan" data-id="<?= $order['ma_don_hang'] ?>" data-action="confirm">Xác nhận</button>
+                                <button class="nut-xac-nhan" data-id="<?= $order['ma_don_hang'] ?? 0 ?>" data-action="confirm">Xác nhận</button>
                             <?php elseif ($statusId == 2): ?>
-                                <button class="nut-giao-hang" data-id="<?= $order['ma_don_hang'] ?>" data-action="deliver">Giao hàng</button>
+                                <button class="nut-giao-hang" data-id="<?= $order['ma_don_hang'] ?? 0 ?>" data-action="deliver">Giao hàng</button>
                             <?php elseif ($statusId == 3): ?>
-                                <button class="nut-da-giao" data-id="<?= $order['ma_don_hang'] ?>" data-action="complete">Đã giao</button>
+                                <button class="nut-da-giao" data-id="<?= $order['ma_don_hang'] ?? 0 ?>" data-action="complete">Đã giao</button>
                             <?php elseif ($canReturn && in_array($statusId, [1,2,3])): ?>
-                                <button class="nut-hoan-hang" data-id="<?= $order['ma_don_hang'] ?>" data-action="return">Chấp nhận hoàn</button>
+                                <button class="nut-hoan-hang" data-id="<?= $order['ma_don_hang'] ?? 0 ?>" data-action="return">Chấp nhận hoàn</button>
                             <?php endif; ?>
                         </td>
                     </tr>
@@ -105,9 +109,11 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
             </table>
 
             <?php if ($totalPages > 1): ?>
-            <div class="phan-trang">
+            <div class="phan-trang" style="margin-top:40px; margin-bottom:40px; text-align:center;">
                 <?php
                 $url = "index.php?c=order&a=processing";
+                $code = trim($_GET['code'] ?? '');
+                $customer = trim($_GET['customer'] ?? '');
                 $url .= $code ? "&code=" . urlencode($code) : '';
                 $url .= $customer ? "&customer=" . urlencode($customer) : '';
                 ?>
@@ -128,11 +134,17 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
     </div>
 </div>
 
-<!-- TÁCH JS + CSS -->
-<link rel="stylesheet" href="assets/css/orders.css">
-<script src="assets/js/order.js"></script>
-<?php include __DIR__ . '/../menu.php'; ?>
-<link rel="stylesheet" href="assets/css/dashboard-tiengviet.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script src="assets/js/dashboard.js"></script>
-<script src="assets/js/danhmuc.js"></script>
+<!-- POPUP HỦY ĐƠN -->
+<div id="popup-cancel" class="popup-overlay" style="display:none">
+    <div class="popup-cancel-content">
+        <h3>Lý do hủy đơn</h3>
+        <form id="form-huy-don">
+            <input type="hidden" id="cancel-order-id" name="order_id" value="">
+            <textarea id="ly-do-huy" name="ly_do_huy" placeholder="Nhập lý do hủy đơn..." required></textarea>
+            <div class="popup-buttons">
+                <button type="button" class="btn-cancel-cancel close-popup-cancel">Hủy</button>
+                <button type="submit" class="confirm-cancel">Xác nhận hủy</button>
+            </div>
+        </form>
+    </div>
+</div>

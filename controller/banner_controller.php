@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../model/banner_model.php'; 
 require_once __DIR__ . '/../config/supabase.php';
+require_once __DIR__ . '/../config/auth.php';
 date_default_timezone_set('Asia/Ho_Chi_Minh'); 
 
 class BannerController {
@@ -11,6 +12,8 @@ class BannerController {
     }
 
     public function index() {
+        require_login();
+        if (!(can('news_banner.crud') || can('news_banner.create_edit'))) { http_response_code(403); echo 'Không có quyền.'; exit; }
         $banners = $this->model->getAllBanners();
         $message = isset($_SESSION['message']) ? $_SESSION['message'] : '';
         unset($_SESSION['message']);
@@ -19,6 +22,8 @@ class BannerController {
 
     
 public function them() {
+    require_login();
+    if (!(can('news_banner.crud') || can('news_banner.create_edit'))) { http_response_code(403); echo 'Không có quyền.'; exit; }
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_FILES['hinh_anh']) && $_FILES['hinh_anh']['error'] === UPLOAD_ERR_OK) {
             $file = $_FILES['hinh_anh'];
@@ -48,6 +53,8 @@ public function them() {
 
 
 public function xoa() {
+    require_login();
+    require_capability('news_banner.crud');
     $ma_banner = $_GET['ma_banner'] ?? null;
     if ($ma_banner) {
         $this->model->deleteBanner($ma_banner);

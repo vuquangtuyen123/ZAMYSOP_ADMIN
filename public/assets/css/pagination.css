@@ -1,0 +1,149 @@
+/* CSS cho Pagination - Dùng chung cho tất cả các trang */
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    margin: 30px 0 40px 0;
+    padding: 20px 0;
+    flex-wrap: wrap;
+    clear: both; /* Đảm bảo không bị ảnh hưởng bởi float */
+}
+
+.pagination a,
+.pagination .pagination-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 6px 12px;
+    margin: 0 2px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #2196F3;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.pagination a:hover,
+.pagination .pagination-link:hover {
+    background-color: #e3f2fd;
+    border-color: #2196F3;
+    color: #1976D2;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(33, 150, 243, 0.2);
+}
+
+.pagination a.active,
+.pagination .pagination-link.active {
+    background-color: #2196F3;
+    border-color: #2196F3;
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(33, 150, 243, 0.3);
+}
+
+.pagination a.active:hover,
+.pagination .pagination-link.active:hover {
+    background-color: #1976D2;
+    border-color: #1976D2;
+    transform: translateY(-1px);
+}
+
+.pagination a:disabled,
+.pagination .pagination-link:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Đảm bảo table không ảnh hưởng đến pagination */
+.news-list {
+    margin-bottom: 0;
+}
+
+.noi-dung-dashboard > .pagination {
+    margin-top: 30px !important;
+    margin-bottom: 40px !important;
+}
+
+/* Phân trang cho order (dùng class .phan-trang) */
+.phan-trang {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    margin: 40px 0;
+    padding: 20px 0;
+    flex-wrap: wrap;
+    clear: both;
+}
+
+.phan-trang a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 6px 12px;
+    margin: 0 2px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #2196F3;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.phan-trang a:hover {
+    background-color: #e3f2fd;
+    border-color: #2196F3;
+    color: #1976D2;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(33, 150, 243, 0.2);
+}
+
+.phan-trang a.nut-truoc,
+.phan-trang a.nut-sau {
+    font-weight: 600;
+}
+
+.phan-trang a.nut-trang-hien-tai {
+    background-color: #2196F3;
+    border-color: #2196F3;
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(33, 150, 243, 0.3);
+}
+
+.phan-trang a.nut-trang-hien-tai:hover {
+    background-color: #1976D2;
+    border-color: #1976D2;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .pagination,
+    .phan-trang {
+        gap: 2px;
+        margin: 20px 0 30px 0;
+    }
+    
+    .pagination a,
+    .pagination .pagination-link,
+    .phan-trang a {
+        min-width: 32px;
+        height: 32px;
+        padding: 4px 8px;
+        font-size: 13px;
+        margin: 0 1px;
+    }
+}

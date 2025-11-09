@@ -1,0 +1,1 @@
+INSERT INTO "public"."roles" ("ma_role", "ten_role") VALUES ('1', 'Administrator'), ('2', 'Moderator'), ('3', 'User');

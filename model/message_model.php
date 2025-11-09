@@ -11,9 +11,12 @@ class MessageModel {
      * Mỗi item chứa ma_chat (the latest chat id between user & admin), user_id, user_name, avatar, last_message, unread_count, ngay_cap_nhat
      */
     public function getChatsByAdminWithSearch($admin_id, $search = '', $filter = 'all') {
+        // 1) Lấy tất cả chat có liên quan tới admin, sort mới → cũ (giới hạn để đỡ tải nặng)
         $params = [
-            'select' => 'ma_chat, ma_nguoi_dung_1, ma_nguoi_dung_2, ngay_cap_nhat, trang_thai',
-            'order' => 'ngay_cap_nhat.desc'
+            'select' => 'ma_chat,ma_nguoi_dung_1,ma_nguoi_dung_2,ngay_cap_nhat,trang_thai',
+            'or' => "(ma_nguoi_dung_1.eq.$admin_id,ma_nguoi_dung_2.eq.$admin_id)",
+            'order' => 'ngay_cap_nhat.desc',
+            'limit' => 500
         ];
         $res = supabase_request('GET', 'chats', $params);
         if ($res['error'] || empty($res['data'])) {
@@ -22,46 +25,116 @@ class MessageModel {
         }
 
         $all_chats = $res['data'];
-        $by_user = []; // key = user_id
 
+        // Tập hợp user và chat id liên quan
+        $userIds = [];
+        $chatIds = [];
         foreach ($all_chats as $chat) {
-            if ($chat['ma_nguoi_dung_1'] != $admin_id && $chat['ma_nguoi_dung_2'] != $admin_id) {
-                continue;
-            }
+            $chatIds[] = $chat['ma_chat'];
+            $uid = ($chat['ma_nguoi_dung_1'] == $admin_id) ? $chat['ma_nguoi_dung_2'] : $chat['ma_nguoi_dung_1'];
+            if ($uid) $userIds[$uid] = true;
+        }
+        $chatIds = array_values(array_unique($chatIds));
+        $userIds = array_map('intval', array_keys($userIds));
 
-            $user_id = ($chat['ma_nguoi_dung_1'] == $admin_id) ? $chat['ma_nguoi_dung_2'] : $chat['ma_nguoi_dung_1'];
-            if (!$user_id) continue;
-
-            $user_info = $this->getUserById($user_id);
-            if (!$user_info) continue;
-
-            if (!empty($search)) {
-                $search_lower = mb_strtolower(trim($search));
-                $name_lower = mb_strtolower($user_info['ten_nguoi_dung'] ?? '');
-                if (strpos($name_lower, $search_lower) === false) {
-                    continue;
+        // 2) Lấy thông tin users theo batch
+        $usersMap = [];
+        if (!empty($userIds)) {
+            $inUsers = '(' . implode(',', $userIds) . ')';
+            $uRes = supabase_request('GET', 'users', [
+                'select' => 'id,ten_nguoi_dung,avatar',
+                'id' => "in.$inUsers"
+            ]);
+            if (!$uRes['error']) {
+                foreach ($uRes['data'] as $u) {
+                    $usersMap[$u['id']] = $u;
                 }
-            }
-
-            $unread_count = $this->getUnreadCountForChat($chat['ma_chat'], $admin_id);
-            $last_message = $this->getLastMessage($chat['ma_chat']);
-
-            if ($filter === 'unread' && $unread_count == 0) continue;
-            if ($filter === 'read' && $unread_count > 0) continue;
-
-            if (!isset($by_user[$user_id]) || strtotime($chat['ngay_cap_nhat']) > strtotime($by_user[$user_id]['ngay_cap_nhat'])) {
-                $chat['user_id'] = $user_id;
-                $chat['user_name'] = $user_info['ten_nguoi_dung'] ?? 'Người dùng';
-                $chat['avatar'] = $user_info['avatar'] ?? '';
-                $chat['last_message'] = $last_message;
-                $chat['unread_count'] = $unread_count;
-                $by_user[$user_id] = $chat;
             }
         }
 
-        $list = array_values($by_user);
-        usort($list, fn($a, $b) => strtotime($b['ngay_cap_nhat']) - strtotime($a['ngay_cap_nhat']));
-        return $list;
+        // 3) Lấy tin nhắn mới nhất cho mỗi chat (một lần query, order theo ma_chat asc, thoi_gian_gui desc)
+        $lastMsgPerChat = [];
+        if (!empty($chatIds)) {
+            $inChats = '(' . implode(',', $chatIds) . ')';
+            $mRes = supabase_request('GET', 'chat_messages', [
+                'select' => 'ma_chat,ma_tin_nhan,noi_dung,thoi_gian_gui,ma_nguoi_gui',
+                'ma_chat' => "in.$inChats",
+                'order' => 'ma_chat.asc,thoi_gian_gui.desc'
+            ]);
+            if (!$mRes['error']) {
+                foreach ($mRes['data'] as $m) {
+                    $cid = $m['ma_chat'];
+                    if (!isset($lastMsgPerChat[$cid])) {
+                        $lastMsgPerChat[$cid] = $m; // bản ghi đầu tiên theo thứ tự là mới nhất cho chat đó
+                    }
+                }
+            }
+        }
+
+        // 4) Lấy tất cả tin nhắn chưa đọc theo batch và đếm theo chat
+        $unreadCountPerChat = [];
+        if (!empty($chatIds)) {
+            $inChats = '(' . implode(',', $chatIds) . ')';
+            $urRes = supabase_request('GET', 'chat_messages', [
+                'select' => 'ma_chat,ma_tin_nhan',
+                'ma_chat' => "in.$inChats",
+                'ma_nguoi_gui' => "neq.$admin_id",
+                'da_doc' => 'eq.false'
+            ]);
+            if (!$urRes['error']) {
+                foreach ($urRes['data'] as $r) {
+                    $cid = $r['ma_chat'];
+                    $unreadCountPerChat[$cid] = ($unreadCountPerChat[$cid] ?? 0) + 1;
+                }
+            }
+        }
+
+        // 5) Gộp theo user: chọn chat có ngay_cap_nhat lớn nhất, tổng số unread của mọi chat của user
+        $by_user = []; // key = user_id
+
+        foreach ($all_chats as $chat) {
+            $user_id = ($chat['ma_nguoi_dung_1'] == $admin_id) ? $chat['ma_nguoi_dung_2'] : $chat['ma_nguoi_dung_1'];
+            if (!$user_id) continue;
+            $user_info = $usersMap[$user_id] ?? null;
+            if (!$user_info) continue;
+
+            // Tính tổng unread cho user: cộng tất cả chat của user
+            $userUnread = ($by_user[$user_id]['unread_count'] ?? 0) + ($unreadCountPerChat[$chat['ma_chat']] ?? 0);
+
+            // Lấy last message của chat hiện tại
+            $last_message = $lastMsgPerChat[$chat['ma_chat']] ?? null;
+
+            // Chọn chat có ngay_cap_nhat mới nhất làm đại diện
+            $shouldReplace = !isset($by_user[$user_id]) || strtotime($chat['ngay_cap_nhat']) > strtotime($by_user[$user_id]['ngay_cap_nhat']);
+            if ($shouldReplace) {
+                $item = $chat; // includes ngay_cap_nhat
+                $item['user_id'] = $user_id;
+                $item['user_name'] = $user_info['ten_nguoi_dung'] ?? 'Người dùng';
+                $item['avatar'] = $user_info['avatar'] ?? '';
+                $item['last_message'] = $last_message;
+                $item['unread_count'] = $userUnread; // set current total
+                $by_user[$user_id] = $item;
+            } else {
+                // Không thay thế, chỉ cập nhật tổng unread
+                $by_user[$user_id]['unread_count'] = $userUnread;
+            }
+        }
+
+        // 6) Áp dụng tìm kiếm theo tên và filter unread/read
+        $out = [];
+        $search_lower = mb_strtolower(trim($search));
+        foreach ($by_user as $user_id => $row) {
+            if ($search !== '') {
+                $name_lower = mb_strtolower($row['user_name'] ?? '');
+                if (strpos($name_lower, $search_lower) === false) continue;
+            }
+            if ($filter === 'unread' && (int)($row['unread_count'] ?? 0) === 0) continue;
+            if ($filter === 'read' && (int)($row['unread_count'] ?? 0) > 0) continue;
+            $out[] = $row;
+        }
+
+        usort($out, fn($a, $b) => strtotime($b['ngay_cap_nhat']) - strtotime($a['ngay_cap_nhat']));
+        return $out;
     }
 
     /**
@@ -179,6 +252,22 @@ class MessageModel {
         $res = supabase_request('POST', 'chat_messages', [], $body);
         if (!$res['error']) {
             supabase_request('PATCH', 'chats', ['ma_chat' => "eq.$chat_id"], ['ngay_cap_nhat' => $thoi_gian_gui]);
+            
+            // Nếu người gửi không phải admin (ID = 1), tạo thông báo cho admin
+            if ($sender_id != 1) {
+                // Lấy thông tin user
+                $userRes = supabase_request('GET', 'users', [
+                    'select' => 'id,ten_nguoi_dung',
+                    'id' => "eq.$sender_id",
+                    'limit' => 1
+                ]);
+                
+                if (!$userRes['error'] && !empty($userRes['data'])) {
+                    $userName = $userRes['data'][0]['ten_nguoi_dung'] ?? 'Người dùng';
+                    require_once __DIR__ . '/notification_model.php';
+                    NotificationModel::notifyNewMessage($sender_id, $userName, $noi_dung);
+                }
+            }
         }
         return $res;
     }

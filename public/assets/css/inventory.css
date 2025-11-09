@@ -1,0 +1,55 @@
+.noi-dung-chinh { margin-left: 250px; padding: 20px; min-height: calc(100vh - 70px); background-color: #f9f9f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+@media (max-width: 768px) { .noi-dung-chinh { margin-left: 0; padding: 10px; } }
+
+.noi-dung-dashboard { background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+
+.noi-dung-dashboard h3 { margin-top: 0; margin-bottom: 20px; color: #2c3e50; font-size: 24px; }
+
+.upload-section, .search-section, .inventory-list-section { margin-bottom: 30px; padding: 20px; background: #f8f9fa; border-radius: 6px; border: 1px solid #e9ecef; }
+
+.upload-section h4, .search-section h4, .inventory-list-section h4 { margin-top: 0; margin-bottom: 15px; color: #495057; font-size: 18px; }
+
+.form-them { margin-top: 15px; }
+.form-them .form-row { margin-bottom: 16px; }
+.form-them .form-row label { display: block; margin-bottom: 6px; font-weight: 600; color: #34495e; }
+.form-them .form-row input[type="file"] { padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; background: #fff; cursor: pointer; }
+.form-them .form-row input[type="file"]:hover { border-color: #2196F3; }
+
+.form-actions { display: flex; gap: 10px; margin-top: 20px; }
+.them-moi-btn { display: inline-block; padding: 12px 25px; background: #92D583; color: #fff; text-decoration: none; border: none; border-radius: 6px; font-weight: 500; cursor: pointer; transition: background-color .3s, transform .2s; }
+.them-moi-btn:hover { background: #218838; transform: translateY(-2px); }
+.export-btn { display: inline-block; padding: 12px 25px; background: #2196F3; color: #fff; text-decoration: none; border: none; border-radius: 6px; font-weight: 500; cursor: pointer; transition: background-color .3s, transform .2s; }
+.export-btn:hover { background: #0b7dda; transform: translateY(-2px); }
+
+.hop-tim-kiem { display: flex; align-items: center; gap: 10px; }
+.hop-tim-kiem form { display: flex; align-items: center; gap: 10px; flex: 1; }
+.hop-tim-kiem input[type="text"] { flex: 1; padding: 10px 40px 10px 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; transition: border-color .3s; }
+.hop-tim-kiem input[type="text"]:focus { outline: none; border-color: #2196F3; box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1); }
+.hop-tim-kiem button { padding: 10px 20px; background: #2196F3; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-weight: 500; transition: background-color .3s; }
+.hop-tim-kiem button:hover { background: #0b7dda; }
+.nut-tai-lai { padding: 10px 20px; background: #6c757d; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-weight: 500; transition: background-color .3s; text-decoration: none; display: inline-block; }
+.nut-tai-lai:hover { background: #5a6268; }
+
+.inventory-table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 0; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-radius: 5px; overflow: hidden; }
+.inventory-table th, .inventory-table td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+.inventory-table th { background: #D9D9D9; color: #000; font-weight: 600; text-transform: uppercase; font-size: 13px; }
+.inventory-table tr:hover { background: #f8f9fa; }
+.inventory-table td { color: #495057; }
+
+.result-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-radius: 5px; overflow: hidden; }
+.result-table th, .result-table td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+.result-table th { background: #D9D9D9; color: #000; font-weight: 600; }
+.result-table .success { color: #28a745; font-weight: 600; }
+.result-table .error { color: #dc3545; font-weight: 600; }
+
+.result-summary { margin-top: 15px; padding: 15px; background: #e7f3ff; border-radius: 6px; border-left: 4px solid #2196F3; }
+.result-summary strong { color: #2196F3; }
+.result-error { margin-top: 15px; padding: 15px; background: #fff3cd; border-radius: 6px; border-left: 4px solid #ffc107; color: #856404; }
+
+.empty-state { text-align: center; padding: 40px 20px; color: #6c757d; }
+.empty-state i { font-size: 48px; color: #dee2e6; margin-bottom: 15px; }
+
+.stock-low { color: #dc3545; font-weight: 600; }
+.stock-medium { color: #ffc107; font-weight: 600; }
+.stock-high { color: #28a745; font-weight: 600; }
+

@@ -2,17 +2,20 @@
 error_reporting(E_ALL & ~E_NOTICE);
 require_once __DIR__ . '/../model/news_model.php'; 
 require_once __DIR__ . '/../config/supabase.php';
+require_once __DIR__ . '/../config/auth.php';
 date_default_timezone_set('Asia/Ho_Chi_Minh'); 
 class NewsController {
     
     private $model;
-    private $itemsPerPage = 2; // Số mục trên mỗi trang
+    private $itemsPerPage = 8; // Phân trang 8 items/trang
 
     public function __construct() {
         $this->model = new NewsModel();
         session_start(); // Bắt đầu session để lưu thông báo
     }
     public function index() {
+    require_login();
+    // both roles can view
     $search = isset($_GET['search']) ? trim($_GET['search']) : '';
     $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 
@@ -34,6 +37,8 @@ class NewsController {
 }
    
     public function them() {
+        require_login();
+        if (!(can('news_banner.crud') || can('news_banner.create_edit'))) { http_response_code(403); echo 'Không có quyền.'; exit; }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
                 'tieu_de' => $_POST['tieu_de'],
@@ -62,6 +67,8 @@ class NewsController {
     }
 
 public function sua($ma_tin_tuc = null) {
+    require_login();
+    if (!(can('news_banner.crud') || can('news_banner.create_edit'))) { http_response_code(403); echo 'Không có quyền.'; exit; }
     if ($ma_tin_tuc === null) {
         $ma_tin_tuc = isset($_GET['ma_tin_tuc']) ? $_GET['ma_tin_tuc'] : null;
         if ($ma_tin_tuc === null) {
@@ -101,6 +108,8 @@ public function sua($ma_tin_tuc = null) {
     }
 }
     public function xoa($ma_tin_tuc = null) {
+        require_login();
+        require_capability('news_banner.crud');
         if ($ma_tin_tuc === null) {
             $ma_tin_tuc = isset($_GET['ma_tin_tuc']) ? $_GET['ma_tin_tuc'] : null;
             if ($ma_tin_tuc === null) {

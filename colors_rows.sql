@@ -1,0 +1,1 @@
+INSERT INTO "public"."colors" ("ma_mau", "ten_mau", "ma_mau_hex") VALUES ('1', 'Trắng', '#FFFFFF'), ('2', 'Đen', '#000000'), ('3', 'Đỏ', '#FF0000'), ('4', 'Xanh dương', '#0000FF'), ('5', 'Xanh lá', '#00FF00'), ('6', 'Vàng', '#FFFF00'), ('7', 'Hồng', '#FFC0CB'), ('8', 'Tím', '#800080');

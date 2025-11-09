@@ -57,6 +57,13 @@ document.addEventListener('DOMContentLoaded', function () {
                                     ? '<span style="color:#d35400;">' + o.ghi_chu + '</span>' 
                                     : '—'}
                                 </div>
+                                <div><strong>Nhân viên xử lý:</strong> ${o.ma_nhan_vien_xu_ly 
+                                    ? '<span style="color:#3498db; font-weight:600;">ID: ' + o.ma_nhan_vien_xu_ly + '</span>' 
+                                    : '<em style="color:#999;">Chưa xử lý</em>'}
+                                </div>
+                                ${o.ly_do_huy_hoan_hang 
+                                    ? `<div><strong>Lý do hủy đơn:</strong> <span style="color:#e74c3c; font-weight:600; background:#ffe6e6; padding:4px 8px; border-radius:4px; display:inline-block;">${o.ly_do_huy_hoan_hang}</span></div>` 
+                                    : ''}
                             </div>
 
                             <h4>Danh sách sản phẩm</h4>
@@ -129,6 +136,74 @@ document.addEventListener('DOMContentLoaded', function () {
         if (e.target === popup) popup.style.display = 'none';
     });
 
+    // === POPUP LÝ DO HỦY ĐƠN ===
+    const cancelPopup = document.getElementById('popup-cancel');
+    const cancelForm = document.getElementById('form-huy-don');
+    const cancelOrderIdInput = document.getElementById('cancel-order-id');
+    const lyDoHuyTextarea = document.getElementById('ly-do-huy');
+    const closeCancelBtn = document.querySelector('.close-popup-cancel');
+    const btnCancelCancel = document.querySelector('.btn-cancel-cancel');
+
+    function showCancelPopup(orderId) {
+        cancelOrderIdInput.value = orderId;
+        lyDoHuyTextarea.value = '';
+        cancelPopup.style.display = 'flex';
+        lyDoHuyTextarea.focus();
+    }
+
+    function hideCancelPopup() {
+        cancelPopup.style.display = 'none';
+        cancelOrderIdInput.value = '';
+        lyDoHuyTextarea.value = '';
+    }
+
+    // Xử lý form hủy đơn
+    if (cancelForm) {
+        cancelForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const orderId = cancelOrderIdInput.value;
+            const lyDo = lyDoHuyTextarea.value.trim();
+
+            if (!lyDo) {
+                showToast('⚠️ Vui lòng nhập lý do hủy đơn!', 'error');
+                return;
+            }
+
+            // Gửi request hủy đơn với lý do
+            fetch('index.php?c=order&a=updateAction', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `id=${orderId}&action=cancel&ly_do_huy=${encodeURIComponent(lyDo)}`
+            })
+            .then(r => r.json())
+            .then(res => {
+                if (res.success) {
+                    hideCancelPopup();
+                    showToast('Đơn hàng đã bị hủy!', 'error');
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showToast('⚠️ ' + (res.message || 'Không thể hủy đơn hàng!'), 'error');
+                }
+            })
+            .catch(() => {
+                showToast('Lỗi kết nối server!', 'error');
+            });
+        });
+    }
+
+    // Đóng popup khi click nút đóng hoặc nút hủy
+    if (closeCancelBtn) {
+        closeCancelBtn.addEventListener('click', hideCancelPopup);
+    }
+    if (btnCancelCancel) {
+        btnCancelCancel.addEventListener('click', hideCancelPopup);
+    }
+    if (cancelPopup) {
+        cancelPopup.addEventListener('click', e => {
+            if (e.target === cancelPopup) hideCancelPopup();
+        });
+    }
+
     // === CHỈ MỘT ĐOẠN DUY NHẤT cho hành động ===
     document.querySelectorAll('[data-action]').forEach(btn => {
         btn.addEventListener('click', function () {
@@ -136,11 +211,14 @@ document.addEventListener('DOMContentLoaded', function () {
             const action = this.dataset.action;
             const text = this.textContent.trim();
 
-            let confirmMsg = `Xác nhận "${text}" cho đơn hàng #${id}?`;
+            // Nếu là hành động hủy, hiển thị popup thay vì confirm
             if (action === 'cancel') {
-                confirmMsg = `Bạn có chắc muốn HỦY đơn hàng #${id}? Hành động này không thể hoàn tác!`;
+                showCancelPopup(id);
+                return;
             }
 
+            // Các hành động khác vẫn dùng confirm
+            let confirmMsg = `Xác nhận "${text}" cho đơn hàng #${id}?`;
             if (!confirm(confirmMsg)) return;
 
             fetch('index.php?c=order&a=updateAction', {
@@ -157,7 +235,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         case 'deliver': showToast('Đơn hàng đang giao!'); break;
                         case 'complete': showToast('Đơn hàng đã hoàn tất!'); break;
                         case 'return': showToast('Đơn hàng đã hoàn hàng!'); break;
-                        case 'cancel': showToast('Đơn hàng đã bị hủy!', 'error'); break;
                         default: showToast('✔️ Cập nhật trạng thái thành công!');
                     }
                     setTimeout(() => location.reload(), 1500);

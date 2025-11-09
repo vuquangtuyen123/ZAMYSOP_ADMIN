@@ -1,0 +1,1 @@
+INSERT INTO "public"."sizes" ("ma_size", "ten_size") VALUES ('1', 'S'), ('2', 'M'), ('3', 'L'), ('4', 'XL');

@@ -1,0 +1,30 @@
+.noi-dung-chinh { margin-left:250px; padding:20px; min-height:calc(100vh - 70px); background:#f9f9f9; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+@media (max-width:768px){ .noi-dung-chinh{ margin-left:0; padding:10px; } }
+.thanh-tieu-de{ display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding:15px 0; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.1); border-radius:4px; }
+.hop-tim-kiem{ position:relative; margin-left:10px; display:flex; align-items:center; gap:10px; }
+.hop-tim-kiem form{ display:flex; align-items:center; position:relative; }
+.hop-tim-kiem input{ padding:10px 40px 10px 15px; border:1px solid #ddd; border-radius:5px; width:320px; font-size:14px; }
+.hop-tim-kiem button{ position:absolute; right:5px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#666; font-size:18px; }
+.all-btn{ display:inline-block; padding:9px 16px; background:#2196F3; color:#fff !important; border-radius:6px; font-weight:500; border:1px solid #2196F3; text-decoration:none; }
+.all-btn:hover{ background:#0b7dda; }
+.news-list{ width:100%; border-collapse:collapse; margin-top:20px; background:#fff; box-shadow:0 2px 5px rgba(0,0,0,.1); border-radius:5px; overflow:hidden; }
+.news-list th,.news-list td{ padding:15px; text-align:left; border-bottom:1px solid #eee; }
+.news-list th{ background:#D9D9D9; color:#000; font-weight:600; text-transform:uppercase; }
+.them-moi-btn{ display:inline-block; padding:12px 25px; background:#92D583; color:#fff; border-radius:6px; font-weight:500; margin-bottom:20px; float:right; }
+.action-link{ display:inline-block; padding:8px 12px; margin-right:10px; border-radius:5px; text-decoration:none; font-weight:500; }
+.edit-link{ color:#28a745; border:1px solid #28a745; }
+.delete-link{ color:#dc3545; border:1px solid #dc3545; }
+.noi-dung-dashboard{ position:relative; }
+.pagination{ position:absolute; left:50%; transform:translateX(-50%); bottom:-20px; display:flex; gap:6px; }
+.form-them .form-row{ margin-bottom:16px; }
+.form-them .form-row label{ display:block; margin-bottom:6px; font-weight:600; color:#34495e; }
+.form-them .form-row input, .form-them .form-row select, .form-them .form-row textarea{ width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; font-size:14px; box-sizing:border-box; }
+
+/* Toggle switch */
+.switch{ position:relative; display:inline-block; width:40px; height:22px; }
+.switch input{ display:none; }
+.slider{ position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background:#ccc; transition:.4s; border-radius:22px; }
+.slider:before{ position:absolute; content:""; height:18px; width:18px; left:2px; bottom:2px; background:#fff; transition:.4s; border-radius:50%; }
+input:checked + .slider{ background:#4CAF50; }
+input:checked + .slider:before{ transform:translateX(18px); }
+

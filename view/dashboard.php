@@ -22,12 +22,83 @@ $categoryRevenue = $categoryRevenue ?? [];
 $topProducts     = $topProducts     ?? [];
 $cancelStats     = $cancelStats     ?? [];
 $returnStats     = $returnStats     ?? [];
+$canhBao         = $canhBao         ?? null;
 
 $type  = $_GET['type']  ?? 'month';
 $value = $_GET['value'] ?? '';
 
-include __DIR__ . '../menu.php';
+include __DIR__ . '/menu.php';
 ?>
+
+<?php if ($canhBao !== null): ?>
+<div id="canhBaoPopup" class="popup-overlay" style="display: none;">
+  <div class="popup-content">
+    <div class="popup-header">
+      <h3>Cảnh báo</h3>
+      <button class="popup-close" onclick="dongCanhBao()">&times;</button>
+    </div>
+    <div class="popup-body">
+      <!-- NGÀY HIỆN TẠI -->
+      <p style="margin: 0 0 15px; font-weight: bold; color: #d9534f; text-align: center;">
+        Ngày: <strong><?= htmlspecialchars($canhBao['ngay']) ?></strong>
+      </p>
+
+      <!-- HOÀN -->
+      <?php if (isset($canhBao['hoan'])): ?>
+        <p><strong>Các sản phẩm bị hoàn:</strong></p>
+        <ul style="margin: 8px 0 15px; padding-left: 20px;">
+          <?php foreach ($canhBao['hoan']['san_pham_hoan'] as $ten => $sl): ?>
+            <li>
+              Sản phẩm <strong><?= htmlspecialchars($ten) ?></strong> bị hoàn: <strong><?= $sl ?></strong> cái
+            </li>
+          <?php endforeach; ?>
+        </ul>
+        <p>Tổng đơn hoàn: <strong><?= $canhBao['hoan']['tong_don_hoan'] ?></strong></p>
+      <?php endif; ?>
+
+      <!-- HỦY -->
+      <?php if (isset($canhBao['huy'])): ?>
+        <?php if (isset($canhBao['hoan'])): ?><hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;"><?php endif; ?>
+        <p>Tổng <strong><?= $canhBao['huy']['so_luong'] ?></strong> đơn hủy.</p>
+      <?php endif; ?>
+    </div>
+    <div class="popup-footer">
+      <button class="btn-close" onclick="dongCanhBao()">Đã hiểu</button>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+let popupTimeout;
+
+function dongCanhBao() {
+  const popup = document.getElementById('canhBaoPopup');
+  if (popup) {
+    popup.style.display = 'none';
+    clearTimeout(popupTimeout);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const popup = document.getElementById('canhBaoPopup');
+  if (popup) {
+    setTimeout(() => {
+      popup.style.display = 'flex';
+    }, 1000);
+
+    popupTimeout = setTimeout(() => {
+      dongCanhBao();
+    }, 10000);
+  }
+});
+
+document.getElementById('canhBaoPopup')?.addEventListener('click', function(e) {
+  if (e.target === this) dongCanhBao();
+});
+</script>
+<?php endif; ?>
 
 <div class="container" id="report-container">
   <h2>Bảng điều khiển doanh thu & thống kê</h2>
@@ -98,6 +169,42 @@ include __DIR__ . '../menu.php';
       <?php endif; ?>
     </div>
   </div>
+ <!-- THỐNG KÊ TẤT CẢ SẢN PHẨM ĐÃ BÁN RA -->
+<div class="table-section">
+  <h3>Thống kê số lượng bán ra theo sản phẩm</h3>
+  <?php 
+    $tongCong = $salesByProduct['tong_cong'] ?? 0;
+    $danhSach = $salesByProduct;
+    unset($danhSach['tong_cong']);
+  ?>
+  <?php if (empty($danhSach)): ?>
+    <p class="no-data">Chưa có sản phẩm nào được bán trong khoảng thời gian này.</p>
+  <?php else: ?>
+    <div class="table-wrapper">
+      <table id="table-sales-all">
+        <thead>
+          <tr>
+            <th>Mã SP</th>
+            <th>Tên sản phẩm</th>
+            <th>Số lượng bán</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($danhSach as $p): ?>
+            <tr>
+              <td class="ma-sp"><?= $p['ma_san_pham'] ?></td>
+              <td class="ten-sp"><?= htmlspecialchars($p['ten_san_pham']) ?></td>
+              <td class="so-luong"><?= number_format($p['so_luong_ban']) ?></td>
+            </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
+    <p class="tong-cong">
+      Tổng cộng: <strong><?= number_format($tongCong) ?></strong> sản phẩm đã bán.
+    </p>
+  <?php endif; ?>
+</div>
 
   <!-- Tỷ lệ hủy -->
   <div class="table-section">
@@ -143,14 +250,16 @@ document.getElementById('export-report').addEventListener('click', function () {
 
   const today = new Date();
   const reportTime = today.toLocaleDateString('vi-VN');
+  const filterInfo = "<?= ucfirst($type) ?> - <?= htmlspecialchars($value ?: 'Toàn bộ') ?>";
+
+  // --- SHEET 1: TỔNG QUAN ---
   const title = [
     ["BÁO CÁO DOANH THU ZAMY SHOP"],
-    ["Thời gian báo cáo:", "<?= ucfirst($type) ?> - <?= htmlspecialchars($value ?: 'Toàn bộ') ?>"],
+    ["Thời gian báo cáo:", filterInfo],
     ["Ngày xuất:", reportTime],
     [],
     ["Chỉ tiêu", "Giá trị"]
   ];
-
   const summary = [
     ["Tổng đơn hàng", "<?= $summary['tong_don_hang'] ?>"],
     ["Đã thanh toán", "<?= $summary['da_thanh_toan'] ?>"],
@@ -159,20 +268,52 @@ document.getElementById('export-report').addEventListener('click', function () {
     ["Đơn hoàn", "<?= $summary['don_hoan'] ?>"],
     ["Tổng doanh thu", "<?= number_format($summary['tong_doanh_thu'], 0, ',', '.') ?>₫"]
   ];
+  const sheet1 = XLSX.utils.aoa_to_sheet([...title, ...summary]);
+  XLSX.utils.book_append_sheet(wb, sheet1, "Tổng quan");
+  
+  // --- SHEET 5: TẤT CẢ SẢN PHẨM ĐÃ BÁN (CÓ TỔNG CỘNG) ---
+  if (document.getElementById('table-sales-all')) {
+    const ws = XLSX.utils.table_to_sheet(document.getElementById('table-sales-all'));
 
-  const sheet = XLSX.utils.aoa_to_sheet([...title, ...summary]);
-  XLSX.utils.book_append_sheet(wb, sheet, "Tổng quan");
+    // Thêm dòng TỔNG CỘNG
+    const tongCong = <?= ($salesByProduct['tong_cong'] ?? 0) ?>;
+    const totalRow = ["", "TỔNG CỘNG", tongCong];
+    XLSX.utils.sheet_add_aoa(ws, [totalRow], { origin: -1 });
 
-  const top = XLSX.utils.table_to_sheet(document.getElementById('table-top'));
-  XLSX.utils.book_append_sheet(wb, top, "Top sản phẩm");
+    // Định dạng cột số lượng
+    const range = XLSX.utils.decode_range(ws['!ref']);
+    for (let R = range.s.r; R <= range.e.r; ++R) {
+      const cell = ws[XLSX.utils.encode_cell({ r: R, c: 2 })];
+      if (cell && typeof cell.v === 'number') {
+        cell.t = 'n';
+        cell.z = '#,##0';
+      }
+    }
 
-  const cancel = XLSX.utils.table_to_sheet(document.getElementById('table-cancel'));
-  XLSX.utils.book_append_sheet(wb, cancel, "Tỷ lệ hủy");
+    XLSX.utils.book_append_sheet(wb, ws, "Tất cả sản phẩm");
+  }
 
-  const ret = XLSX.utils.table_to_sheet(document.getElementById('table-return'));
-  XLSX.utils.book_append_sheet(wb, ret, "Tỷ lệ hoàn");
+  // --- SHEET 2: TOP 5 SẢN PHẨM BÁN CHẠY ---
+  if (document.getElementById('table-top')) {
+    const topSheet = XLSX.utils.table_to_sheet(document.getElementById('table-top'));
+    XLSX.utils.book_append_sheet(wb, topSheet, "Top sản phẩm");
+  }
 
-  const fileName = `BaoCao_ZamyShop_${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}.xlsx`;
+  // --- SHEET 3: TỶ LỆ HỦY ---
+  if (document.getElementById('table-cancel')) {
+    const cancelSheet = XLSX.utils.table_to_sheet(document.getElementById('table-cancel'));
+    XLSX.utils.book_append_sheet(wb, cancelSheet, "Tỷ lệ hủy");
+  }
+
+  // --- SHEET 4: TỶ LỆ HOÀN ---
+  if (document.getElementById('table-return')) {
+    const returnSheet = XLSX.utils.table_to_sheet(document.getElementById('table-return'));
+    XLSX.utils.book_append_sheet(wb, returnSheet, "Tỷ lệ hoàn");
+  }
+
+
+  // --- XUẤT FILE ---
+  const fileName = `BaoCao_ZamyShop_${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}.xlsx`;
   XLSX.writeFile(wb, fileName);
 });
 
@@ -182,15 +323,32 @@ document.getElementById('export-pdf').addEventListener('click', async function (
   const pdf = new jsPDF('p', 'mm', 'a4');
 
   const container = document.getElementById('report-container');
-  const canvas = await html2canvas(container, { scale: 2 });
+  const canvas = await html2canvas(container, { 
+    scale: 2,
+    useCORS: true,
+    scrollY: -window.scrollY
+  });
   const imgData = canvas.toDataURL('image/png');
 
   const pageWidth = pdf.internal.pageSize.getWidth();
   const pageHeight = pdf.internal.pageSize.getHeight();
-  const imgHeight = canvas.height * pageWidth / canvas.width;
+  const imgHeight = (canvas.height * pageWidth) / canvas.width;
+  let heightLeft = imgHeight;
 
-  pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, imgHeight);
-  pdf.save(`BaoCao_ZamyShop_${new Date().toLocaleDateString('vi-VN')}.pdf`);
+  let position = 0;
+
+  // Nếu quá dài, chia nhiều trang
+  while (heightLeft >= 0) {
+    pdf.addImage(imgData, 'PNG', 0, position, pageWidth, imgHeight);
+    heightLeft -= pageHeight;
+    position -= pageHeight;
+    if (heightLeft >= 0) {
+      pdf.addPage();
+    }
+  }
+
+  const fileName = `BaoCao_ZamyShop_${new Date().toLocaleDateString('vi-VN').replace(/\//g, '-')}.pdf`;
+  pdf.save(fileName);
 });
 </script>
 </body>
