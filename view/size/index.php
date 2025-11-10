@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="assets/js/dashboard.js"></script>
 <script src="assets/js/size.js"></script>
-<head><meta charset="UTF-8"><title>Quản lý Size</title></head>
+<head><meta charset="UTF-8"><title>Quản lý Size -ZamyShop</title></head>
 <main class="noi-dung-chinh">
 	<header class="thanh-tieu-de">
 		<div></div>

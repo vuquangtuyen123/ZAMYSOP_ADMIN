@@ -11,6 +11,7 @@
 
 // Import model xử lý danh mục
 require_once __DIR__ . '/../../model/danhmuc_model.php';
+date_default_timezone_set('Asia/Ho_Chi_Minh'); 
 
 /**
  * Class DanhmucController - Controller xử lý danh mục

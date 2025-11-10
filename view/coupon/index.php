@@ -8,7 +8,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>Quản lý Mã giảm giá</title>
+	<title>Quản lý Mã giảm giá -ZamyShop</title>
 </head>
 <main class="noi-dung-chinh">
 	<header class="thanh-tieu-de">

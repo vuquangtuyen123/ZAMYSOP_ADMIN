@@ -9,7 +9,7 @@
 <script src="assets/js/danhmuc.js"></script>
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý Tin Tức</title>
+    <title>Quản lý Tin Tức - ZamyShop</title>
 </head>
 <main class="noi-dung-chinh">
    <header class="thanh-tieu-de">
@@ -62,7 +62,7 @@
                     <td>
                         <a href="index.php?c=news&a=sua&ma_tin_tuc=<?= $item['ma_tin_tuc'] ?>" class="action-link edit-link"><i class="fas fa-edit"></i> Sửa</a>
                         
-                        <?php if (can('news.delete')): // chỉ hiện nút xóa nếu có quyền ?>
+                       <?php if (can('news_banner.crud')): ?> <!-- chỉ hiện nút xóa nếu có quyền ?-->
                             <a href="index.php?c=news&a=xoa&ma_tin_tuc=<?= $item['ma_tin_tuc'] ?>" class="action-link delete-link" onclick="return confirm('Bạn có chắc muốn xóa?')"><i class="fas fa-trash"></i> Xóa</a>
                         <?php endif; ?>
                     </td>

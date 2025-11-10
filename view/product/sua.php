@@ -5,10 +5,9 @@
 <script src="assets/js/dashboard.js"></script>
 <script src="assets/js/product.js"></script>
 
-<main class="noi-dung-chinh">
-	<div class="noi-dung-dashboard">
-		<h3>Sửa sản phẩm</h3>
-        <form method="POST" action="index.php?c=product&a=sua&ma_san_pham=<?= htmlspecialchars($product['ma_san_pham']) ?>" class="form-them" enctype="multipart/form-data">
+<main class="noi-dung-chinh"> 
+		<h2>Sửa sản phẩm</h2> 
+        <form method="POST" action="index.php?c=product&a=sua&ma_san_pham=<?= htmlspecialchars($product['ma_san_pham']) ?>" class="form-them" enctype="multipart/form-data"> 
 			<div class="form-row">
 				<label>Tên sản phẩm</label>
 				<input type="text" name="ten_san_pham" value="<?= htmlspecialchars($product['ten_san_pham'] ?? '') ?>" required>
@@ -37,12 +36,7 @@
 					<?php endforeach; ?>
 				</select>
 			</div>
-			<?php /* Tạm thời ẩn - chưa có chức năng xử lý
-			<div class="form-row">
-				<label>Mã bộ sưu tập (tuỳ chọn)</label>
-				<input type="text" name="ma_bo_suu_tap" value="<?= htmlspecialchars($product['ma_bo_suu_tap'] ?? '') ?>">
-			</div>
-			*/ ?>
+
 			<div class="form-row">
 				<label>Hiển thị</label>
 				<input type="checkbox" name="trang_thai_hien_thi" value="1" <?= !empty($product['trang_thai_hien_thi']) ? 'checked' : '' ?> >
@@ -72,7 +66,7 @@
             <div id="new-images-preview" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;"></div>
         </div>
 
-			<h4>Biến thể (Màu sắc / Size / Tồn kho)</h4>
+			<h4>Biến thể (Màu sắc / Size)</h4>
 			<div id="variant-list">
 				<?php if (!empty($variants)): ?>
 					<?php foreach ($variants as $v): ?>
@@ -91,8 +85,10 @@
 								<option value="<?= (int)$sz['ma_size'] ?>" <?= (int)$sz['ma_size'] === (int)$v['ma_size'] ? 'selected' : '' ?>><?= htmlspecialchars($sz['ten_size']) ?></option>
 							<?php endforeach; ?>
 						</select>
+						<!--
 						<label>Tồn kho</label>
-						<input type="number" name="variant_stock[]" min="0" value="<?= (int)($v['ton_kho'] ?? 0) ?>" style="max-width:140px;">
+						<input type="number" name="variant_stock[]" min="0" value="<?= (int)($v['ton_kho'] ?? 0) ?>" style="max-width:140px;"> 
+						-->
 					</div>
 					<?php endforeach; ?>
 				<?php else: ?>
@@ -111,8 +107,10 @@
 								<option value="<?= (int)$sz['ma_size'] ?>"><?= htmlspecialchars($sz['ten_size']) ?></option>
 							<?php endforeach; ?>
 						</select>
+						<!--
 						<label>Tồn kho</label>
 						<input type="number" name="variant_stock[]" min="0" value="0" style="max-width:140px;">
+						-->
 					</div>
 				<?php endif; ?>
 			</div>
@@ -133,7 +131,7 @@ function addVariantRow() {
 	const first = container.querySelector('.variant-row');
 	const row = first.cloneNode(true);
 	row.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
-	row.querySelector('input[name="variant_stock[]"]').value = 0;
+	// row.querySelector('input[name="variant_stock[]"]').value = 0; // Ẩn tồn kho
 	container.appendChild(row);
 }
 
@@ -188,4 +186,3 @@ function previewNewImages(input) {
 	}
 }
 </script>
-

@@ -1,44 +1,221 @@
-.noi-dung-chinh { margin-left:250px; padding:20px; min-height:calc(100vh - 70px); background:#f9f9f9; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-@media (max-width:768px){ .noi-dung-chinh{ margin-left:0; padding:12px; } }
+.noi-dung-chinh { 
+    margin-left:250px; 
+    padding:20px; 
+    min-height:calc(100vh - 70px); 
+    background:#f9f9f9; 
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+}
+@media (max-width:768px){ 
+    .noi-dung-chinh{ 
+        margin-left:0; 
+        padding:12px; 
+    } 
+}
 
 /* Khung chung trang danh mục */
-.noi-dung-trang-danh-muc { background:#fff; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,.08); padding:22px; }
-.tieu-de-trang { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
-.tieu-de-trang h2 { margin:0; font-size:22px; color:#2c3e50; display:flex; align-items:center; gap:10px; }
+.noi-dung-trang-danh-muc { 
+    background:#fff; 
+    border-radius:10px; 
+    box-shadow:0 4px 12px rgba(0,0,0,.08); 
+    padding:22px; 
+}
+.tieu-de-trang { 
+    display:flex; 
+    align-items:center; 
+    justify-content:space-between; 
+    margin-bottom:16px; 
+}
+.tieu-de-trang h2 { 
+    margin:0; 
+    font-size:22px; 
+    color:#2c3e50; 
+    display:flex; 
+    align-items:center; 
+    gap:10px; 
+}
 
 /* Nút hành động đầu trang */
-.nut-hanh-dong { display:flex; gap:10px; }
-.nut-thao-tac { display:inline-flex; align-items:center; gap:8px; padding:10px 16px; border-radius:8px; text-decoration:none; font-weight:600; border:1px solid transparent; transition:all .25s; }
-.nut-quay-lai { background:#e9ecef; color:#333; }
-.nut-quay-lai:hover { background:#dfe3e7; }
+.nut-hanh-dong { 
+    display:flex; 
+    gap:10px; 
+}
+.nut-thao-tac { 
+    display:inline-flex; 
+    align-items:center; 
+    gap:8px; 
+    padding:10px 16px; 
+    border-radius:8px; 
+    text-decoration:none; 
+    font-weight:600; 
+    border:1px solid transparent; 
+    transition:all .25s; 
+}
+.nut-quay-lai { 
+    background:#e9ecef; 
+    color:#333; 
+}
+.nut-quay-lai:hover { 
+    background:#dfe3e7; 
+}
 
 /* Thông báo */
-.thong-bao-loi { background:#ffe5e7; color:#c0392b; border-left:4px solid #e74c3c; padding:12px 14px; border-radius:6px; margin:10px 0; }
-.thong-bao-thanh-cong { background:#e8f7ee; color:#1e7e34; border-left:4px solid #28a745; padding:12px 14px; border-radius:6px; margin:10px 0; }
+.thong-bao-loi { 
+    background:#ffe5e7; 
+    color:#c0392b; 
+    border-left:4px solid #e74c3c; 
+    padding:12px 14px; 
+    border-radius:6px; 
+    margin:10px 0; 
+}
+.thong-bao-thanh-cong { 
+    background:#e8f7ee; 
+    color:#1e7e34; 
+    border-left:4px solid #28a745; 
+    padding:12px 14px; 
+    border-radius:6px; 
+    margin:10px 0; 
+}
 
 /* Khung form thêm/sửa */
-.khung-form { background:#fff; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,.06); padding:18px; }
-.form-them-danh-muc, .form-sua-danh-muc { max-width:600px; }
-.nhom-input { margin-bottom:16px; }
-.nhan-input { display:block; margin-bottom:8px; font-weight:600; color:#34495e; }
-.bat-buoc { color:#e74c3c; }
-.o-input { width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; font-size:14px; transition:border-color .25s, box-shadow .25s; box-sizing:border-box; }
-.o-input:focus { border-color:#92D583; box-shadow:0 0 0 3px rgba(146,213,131,.2); outline:none; }
-.ghi-chu { display:block; margin-top:6px; color:#888; font-size:12px; }
+.khung-form { 
+    background:#fff; 
+    border-radius:10px; 
+    box-shadow:0 2px 8px rgba(0,0,0,.06); 
+    padding:18px; 
+}
+.form-them-danh-muc, .form-sua-danh-muc { 
+    max-width:600px; 
+}
+.nhom-input { 
+    margin-bottom:16px; 
+}
+.nhan-input { 
+    display:block; 
+    margin-bottom:8px; 
+    font-weight:600; 
+    color:#34495e; 
+}
+.bat-buoc { 
+    color:#e74c3c; 
+}
+.o-input { 
+    width:100%; 
+    padding:12px; 
+    border:1px solid #ddd; 
+    border-radius:8px; 
+    font-size:14px; 
+    transition:border-color .25s, box-shadow .25s; 
+    box-sizing:border-box; 
+}
+.o-input:focus { 
+    border-color:#92D583; 
+    box-shadow:0 0 0 3px rgba(146,213,131,.2); 
+    outline:none; 
+}
+.ghi-chu { 
+    display:block; 
+    margin-top:6px; 
+    color:#888; 
+    font-size:12px; 
+}
 
 /* Nhóm nút dưới form */
-.nhom-nut-hanh-dong { display:flex; gap:10px; margin-top:10px; }
-.nut-chinh { background:#92D583; color:#fff; border:1px solid #92D583; }
-.nut-chinh:hover { background:#6ec45b; border-color:#6ec45b; }
-.nut-huy { background:#f1f3f5; color:#333; border:1px solid #e3e6ea; }
-.nut-huy:hover { background:#e9ecef; }
+.nhom-nut-hanh-dong { 
+    display:flex; 
+    gap:10px; 
+    margin-top:10px; 
+}
+.nut-chinh { 
+    background:#92D583; 
+    color:#fff; 
+    border:1px solid #92D583; 
+}
+.nut-chinh:hover { 
+    background:#6ec45b; 
+    border-color:#6ec45b; 
+}
+.nut-huy { 
+    background:#f1f3f5; 
+    color:#333; 
+    border:1px solid #e3e6ea; 
+}
+.nut-huy:hover { 
+    background:#e9ecef; 
+}
 
 /* Bảng danh mục (trang danh sách) */
-.bang-du-lieu-danh-muc { width:100%; border-collapse:collapse; background:#fff; border-radius:8px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.06); }
-.bang-du-lieu-danh-muc th, .bang-du-lieu-danh-muc td { padding:14px; border-bottom:1px solid #eee; text-align:left; }
-.bang-du-lieu-danh-muc th { background:#D9D9D9; text-transform:uppercase; font-weight:600; }
+.bang-du-lieu-danh-muc { 
+    width:100%; 
+    border-collapse:collapse; 
+    background:#fff; 
+    border-radius:8px; 
+    overflow:hidden; 
+    box-shadow:0 2px 8px rgba(0,0,0,.06); 
+}
+.bang-du-lieu-danh-muc th, 
+.bang-du-lieu-danh-muc td { 
+    padding:14px; 
+    border-bottom:1px solid #eee; 
+    text-align:left; 
+}
+.bang-du-lieu-danh-muc th { 
+    background:#D9D9D9; 
+    text-transform:uppercase; 
+    font-weight:600; 
+}
 
 /* Search ô danh mục trên trang list */
-.input-tim-kiem-live { padding:10px 14px; border:1px solid #ddd; border-radius:8px; width:280px; transition:border-color .25s, box-shadow .25s; }
-.input-tim-kiem-live:focus { border-color:#2196F3; box-shadow:0 0 0 3px rgba(33,150,243,.15); outline:none; }
+.input-tim-kiem-live { 
+    padding:10px 14px; 
+    border:1px solid #ddd; 
+    border-radius:8px; 
+    width:280px; 
+    transition:border-color .25s, box-shadow .25s; 
+}
+.input-tim-kiem-live:focus { 
+    border-color:#2196F3; 
+    box-shadow:0 0 0 3px rgba(33,150,243,.15); 
+    outline:none; 
+}
 
+/* ========================================
+   NÚT SỬA & XÓA – GIỐNG HỆT TRANG COLOR
+   ======================================== */
+.action-link {
+    display: inline-block;
+    padding: 8px 12px;
+    margin-right: 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 13.5px;
+    transition: all 0.3s ease;
+    min-width: 50px;
+    text-align: center;
+}
+
+.edit-link {
+    color: #28a745;
+    border: 1px solid #28a745;
+}
+
+.edit-link:hover {
+    background: #28a745;
+    color: #fff;
+}
+
+.delete-link {
+    color: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+.delete-link:hover {
+    background: #dc3545;
+    color: #fff;
+}
+
+/* Icon trong nút (nếu có) */
+.action-link i {
+    margin-right: 4px;
+    font-size: 12px;
+}

@@ -1,5 +1,6 @@
 
-/* Khung chính (đồng bộ với tin tức) */
+
+/* Khung chính */
 .noi-dung-chinh {
     margin-left: 250px;
     padding: 20px;
@@ -8,7 +9,7 @@
     transition: margin-left 0.3s ease;
     box-sizing: border-box;
     color: #222;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 @media (max-width: 768px) {
@@ -18,74 +19,75 @@
     }
 }
 
-/* Tiêu đề */
-.noi-dung-chinh h3,
-.thanh-tieu-de h3 {
-       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    display: flex;
-     font-size: 28px;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    padding: 15px 0;
-    border-radius: 4px;
-    border-bottom: 2px solid #D9D9D9;
-}
-
 /* Thanh tiêu đề */
 .thanh-tieu-de {
-     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
-     font-size: 28px;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
     padding: 15px 0;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
     border-bottom: 2px solid #D9D9D9;
 }
 
-/* Nút thêm mới */
+/* CHỮ USER – KHÔNG VIỀN, KHÔNG NỀN, CHỮ TRẦN */
+.thong-tin-nguoi-dung {
+    font-size: 15px;
+    color: #333;
+    margin-right: 10px;
+    font-weight: 500;
+}
+
+.thong-tin-nguoi-dung span {
+    background: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* Nút Thêm mới */
 .them-moi-btn {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 20px;
+    padding: 12px 25px;
     background-color: #92D583;
     color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
     text-decoration: none;
-    transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+    border-radius: 6px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    float: right;
+    transition: background-color 0.3s, transform 0.2s;
 }
+
 .them-moi-btn:hover {
     background-color: #218838;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(40,167,69,0.3);
 }
+
 .them-moi-btn i {
     font-size: 0.9rem;
 }
 
-/* Lưới banner: 3 ảnh trên 1 hàng, ảnh to hơn */
+/* Lưới banner */
 .banner-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 32px;
     margin-top: 32px;
+    clear: both;
 }
+
 @media (max-width: 1200px) {
-    .banner-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+    .banner-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 768px) {
-    .banner-grid {
-        grid-template-columns: 1fr;
-    }
+    .banner-grid { grid-template-columns: 1fr; }
 }
 
 /* Banner item */
@@ -102,12 +104,13 @@
     align-items: center;
     transition: background-color 0.3s, transform 0.2s;
 }
+
 .banner-item:hover {
     background-color: #e9ecef;
     transform: translateY(-4px);
 }
 
-/* Ảnh banner */
+/* Ảnh */
 .banner-img {
     max-width: 100%;
     max-height: 260px;
@@ -117,6 +120,7 @@
     width: 100%;
     transition: opacity 0.3s;
 }
+
 .banner-img:hover {
     opacity: 0.8;
 }
@@ -130,31 +134,38 @@
     align-items: center;
     gap: 5px;
 }
+
 .banner-date i {
     font-size: 15px;
     color: #2196F3;
 }
 
-/* Nút xóa */
+/* NÚT XÓA – GIỐNG NEWS */
 .delete-banner {
     position: absolute;
     top: 8px;
     right: 8px;
-    background: rgba(255,255,255,0.9);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    padding: 6px;
+    background: rgba(255,255,255,0.9);
     color: #dc3545;
-    font-size: 18px;
+    border: 1.5px solid #dc3545;
+    font-size: 16px;
     cursor: pointer;
-    border: none;
-    outline: none;
-    transition: background-color 0.3s, color 0.3s, transform 0.2s;
+    transition: all 0.3s ease;
+    z-index: 2;
 }
+
 .delete-banner:hover {
     background-color: #dc3545;
     color: #fff;
     transform: scale(1.1);
 }
+
 .delete-banner i {
     font-size: 0.95rem;
 }
@@ -168,9 +179,9 @@
     width: 40px;
     height: 22px;
 }
-.switch input {
-    display: none;
-}
+
+.switch input { display: none; }
+
 .slider {
     position: absolute;
     cursor: pointer;
@@ -179,6 +190,7 @@
     border-radius: 22px;
     transition: background-color 0.4s;
 }
+
 .slider:before {
     content: "";
     position: absolute;
@@ -190,42 +202,16 @@
     background: #fff;
     transition: transform 0.4s;
 }
+
 .switch input:checked + .slider {
     background-color: #4CAF50;
 }
+
 .switch input:checked + .slider:before {
     transform: translateX(18px);
 }
 
-/* Form thêm banner */
-form {
-    max-width: ̣900px;
-    margin: 0 auto;
-    background: #f3f3f3;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    padding: 32px 28px;
-}
-.form-group {
-    margin-bottom: 28px;
-}
-.form-group label {
-    font-size: 16px;
-    font-weight: 600;
-    color: #34495e;
-    margin-bottom: 10px;
-}
-.form-group input[type="file"] {
-    padding: 14px;
-    font-size: 15px;
-    border-radius: 7px;
-}
-.form-group input[type="checkbox"] {
-    accent-color: #92D583;
-    margin-right: 10px;
-}
-
-/* Toast thông báo */
+/* Toast */
 .toast {
     position: fixed;
     top: 24px;
@@ -241,20 +227,23 @@ form {
     transition: opacity 0.3s, transform 0.3s;
     font-size: 16px;
 }
+
 .toast.show {
     opacity: 1;
     transform: translateY(0);
 }
+
 .toast.hide {
     opacity: 0;
     transform: translateY(-10px);
 }
 
-/* Thông điệp khi không có banner */
+/* Không có banner */
 .banner-grid p {
     grid-column: 1 / -1;
-    margin: 12px 0;
+    margin: 40px 0;
     color: #5b6270;
     text-align: center;
     font-size: 16px;
+    font-style: italic;
 }

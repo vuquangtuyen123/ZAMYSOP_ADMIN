@@ -7,7 +7,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>Quản lý Bộ sưu tập</title>
+	<title>Quản lý Bộ sưu tập - ZamyShop</title>
 </head>
 <main class="noi-dung-chinh">
 	<header class="thanh-tieu-de">

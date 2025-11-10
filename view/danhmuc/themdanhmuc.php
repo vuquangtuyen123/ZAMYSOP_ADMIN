@@ -1,3 +1,6 @@
+<?php
+date_default_timezone_set('Asia/Ho_Chi_Minh'); 
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>

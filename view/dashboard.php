@@ -102,7 +102,9 @@ document.getElementById('canhBaoPopup')?.addEventListener('click', function(e) {
 
 <div class="container" id="report-container">
   <h2>Bảng điều khiển doanh thu & thống kê</h2>
-
+ <div class="thong-tin-nguoi-dung">
+     <span>Xin chào: <?= htmlspecialchars($_SESSION['user_name'] ?? $_SESSION['user_email']) ?></span>
+ </div>
   <!-- Tổng quan -->
   <div class="stats-grid">
     <div class="stat-card"><h3>Tổng đơn hàng</h3><p><?= $summary['tong_don_hang'] ?></p></div>

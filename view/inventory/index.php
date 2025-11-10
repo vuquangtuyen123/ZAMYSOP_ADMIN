@@ -4,8 +4,9 @@
 <link rel="stylesheet" href="assets/css/pagination.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="assets/js/dashboard.js"></script>
-
+    <title>Quản lý tồn kho - ZamyShop</title>
 <main class="noi-dung-chinh">
+	<title>Quản lý người dùng</title>
 	<div class="noi-dung-dashboard">
 		<h3><i class="fas fa-boxes"></i> Quản lý tồn kho</h3>
 
@@ -16,10 +17,10 @@
 				<form method="GET" action="index.php">
 					<input type="hidden" name="c" value="inventory">
 					<input type="hidden" name="a" value="index">
-					<input type="text" name="search" value="<?= htmlspecialchars($search ?? '') ?>" placeholder="Tìm theo tên sản phẩm, size, màu sắc, mã biến thể..." id="searchInput">
-					<button type="submit"><i class="fas fa-search"></i> Tìm kiếm</button>
+					<input type="text" name="search" value="<?= htmlspecialchars($search ?? '') ?>" placeholder="Tìm theo tên, size, màu sắc, mã biến thể..." id="searchInput">
+					<button type="submit"><i class=""></i> Tìm kiếm</button>
 				</form>
-				<a href="index.php?c=inventory&a=index" class="nut-tai-lai"><i class="fas fa-redo"></i> Tải lại</a>
+				<a href="index.php?c=inventory&a=index" class="nut-tai-lai"><i class=""></i> Tải lại</a>
 			</div>
 		</div>
 

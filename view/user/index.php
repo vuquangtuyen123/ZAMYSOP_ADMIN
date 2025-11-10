@@ -8,9 +8,9 @@
     <script src="assets/js/dashboard.js"></script>
     <script src="assets/js/user.js"></script>
 </head>
-
+    <title>Quản lý người dùng - ZamyShop</title>
 <main class="noi-dung-chinh">
-
+<h2>Quản lý người dùng </h2>
     <!-- ===== THANH TIÊU ĐỀ + LỌC ===== -->
     <header class="thanh-tieu-de">
         <div class="hop-tim-kiem">

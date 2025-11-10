@@ -1,55 +1,82 @@
-/* =============================== */
-/* assets/css/variant.css - Dành riêng cho variant */
-/* =============================== */
+/* ===========================================
+   VARIANT MANAGEMENT – DANH SÁCH, THÊM, SỬA
+   PHONG CÁCH: ĐỒNG NHẤT VỚI TRANG COLOR
+   ĐÃ SỬA: NÚT SỬA & XÓA GIỐNG HỆT TRANG COLOR
+   =========================================== */
 
-/* Container chính */
+/* ------------------- LAYOUT CHÍNH ------------------- */
 .noi-dung-chinh {
-    padding: 20px;
-    background: #f4f6f9;
-    min-height: 100vh;
+    margin-left: 250px;
+    padding: 28px;
+    min-height: calc(100vh - 70px);
+    background: #f8f9fc;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: all 0.3s ease;
 }
 
-/* ===================== THANH TIÊU ĐỀ ===================== */
+@media (max-width: 768px) {
+    .noi-dung-chinh {
+        margin-left: 0;
+        padding: 18px;
+    }
+}
+
+/* ------------------- TIÊU ĐỀ + NÚT HÀNH ĐỘNG ------------------- */
 .thanh-tieu-de {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
     padding-bottom: 12px;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 2px solid #e2e8f0;
 }
 
 .thanh-tieu-de h2 {
     margin: 0;
-    color: #2c3e50;
-    font-size: 1.5rem;
+    font-size: 24px;
     font-weight: 600;
+    color: #2d3748;
+}
+
+.them-moi-btn,
+.reset-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14.5px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 .them-moi-btn {
     background: #27ae60;
     color: #fff;
-    padding: 10px 18px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 0.9rem;
-    transition: all 0.3s;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
 }
 
 .them-moi-btn:hover {
     background: #219150;
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(39, 174, 96, 0.2);
+    box-shadow: 0 6px 14px rgba(39,174,96,0.25);
 }
 
-/* ===================== Ô TÌM KIẾM ===================== */
+.reset-btn {
+    background: #718096;
+    color: #fff;
+}
+
+.reset-btn:hover {
+    background: #5a677a;
+    transform: translateY(-1px);
+}
+
+/* ------------------- Ô TÌM KIẾM ------------------- */
 .hop-tim-kiem {
-    margin-bottom: 25px;
+    margin-bottom: 24px;
+    max-width: 520px;
 }
 
 .hop-tim-kiem form {
@@ -57,18 +84,18 @@
     align-items: center;
     background: #fff;
     padding: 12px 16px;
-    border-radius: 8px;
+    border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    max-width: 520px;
-    gap: 10px;
+    border: 1.5px solid #e2e8f0;
+    gap: 12px;
 }
 
 .hop-tim-kiem input[type="text"] {
+    flex: 1;
     border: none;
     outline: none;
-    flex: 1;
-    font-size: 0.95rem;
-    color: #333;
+    font-size: 14.5px;
+    color: #2d3748;
 }
 
 .hop-tim-kiem input::placeholder {
@@ -78,42 +105,52 @@
 .hop-tim-kiem button[type="submit"] {
     background: none;
     border: none;
-    color: #7f8c8d;
-    font-size: 1.1rem;
+    color: #718096;
+    font-size: 18px;
     cursor: pointer;
     padding: 0 6px;
-    transition: color 0.2s;
+    transition: color 0.2s ease;
 }
 
 .hop-tim-kiem button[type="submit"]:hover {
-    color: #3498db;
+    color: #3182ce;
 }
 
-.reset-btn {
-    background: #95a5a6;
-    color: #fff;
-    border: none;
-    padding: 8px 14px;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.3s;
+/* ------------------- THÔNG BÁO (SUCCESS / ERROR) ------------------- */
+.alert-message {
+    padding: 14px 18px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-weight: 500;
+    font-size: 14.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    border-left: 4px solid;
 }
 
-.reset-btn:hover {
-    background: #7f8c8d;
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border-left-color: #28a745;
 }
 
-/* ===================== BẢNG DANH SÁCH ===================== */
+.alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border-left-color: #dc3545;
+}
+
+/* ------------------- BẢNG DANH SÁCH ------------------- */
 .news-list {
     width: 100%;
     border-collapse: collapse;
     background: #fff;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    margin-bottom: 30px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    margin-bottom: 24px;
 }
 
 .news-list th {
@@ -122,117 +159,162 @@
     padding: 16px 14px;
     text-align: left;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 13.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .news-list td {
     padding: 14px;
-    border-bottom: 1px solid #f0f0f0;
-    font-size: 0.9rem;
-    color: #2c3e50;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 14.5px;
+    color: #2d3748;
 }
 
 .news-list tr:hover {
-    background: #f8f9fa;
+    background: #f8f9fc;
 }
 
 .news-list tr:last-child td {
     border-bottom: none;
 }
 
+.news-list td[colspan] {
+    text-align: center;
+    color: #718096;
+    font-style: italic;
+    padding: 32px;
+}
+
+/* ------------------- HÀNH ĐỘNG: SỬA & XÓA – GIỐNG HỆT TRANG COLOR ------------------- */
 .action-link {
-    color: #e74c3c;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    margin-right: 10px;
+    border-radius: 5px;
     text-decoration: none;
     font-weight: 500;
-    font-size: 0.9rem;
-    transition: color 0.2s;
+    font-size: 13.5px;
+    transition: all 0.3s ease;
+    min-width: 50px;
+    justify-content: center;
+    border: 1px solid transparent;
 }
 
-.action-link:hover {
-    color: #c0392b;
-    text-decoration: underline;
+.action-link i {
+    font-size: 13px;
+    margin-right: 4px;
 }
 
-/* ===================== PHÂN TRANG ===================== */
+.edit-link {
+    color: #28a745;
+    border: 1px solid #28a745;
+}
+
+.edit-link:hover {
+    background: #28a745;
+    color: #fff;
+    border-color: #28a745;
+}
+
+.delete-link {
+    color: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+.delete-link:hover {
+    background: #dc3545;
+    color: #fff;
+    border-color: #dc3545;
+}
+
+/* ------------------- PHÂN TRANG ------------------- */
 .user-pagination-wrapper {
-    text-align: center;
+    display: flex;
+    justify-content: center;
     margin: 30px 0;
 }
 
 .user-pagination {
-    display: inline-flex;
-    gap: 6px;
+    display: flex;
+    gap: 8px;
     flex-wrap: wrap;
-    justify-content: center;
 }
 
 .user-pagination a {
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     min-width: 40px;
-    padding: 10px 14px;
-    background: white;
-    color: #34495e;
+    height: 40px;
+    padding: 0 12px;
+    background: #fff;
+    color: #4a5568;
     text-decoration: none;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    transition: all 0.2s;
+    border-radius: 8px;
+    font-size: 14px;
+    border: 1.5px solid #e2e8f0;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 
 .user-pagination a:hover {
-    background: #3498db;
-    color: white;
+    background: #3182ce;
+    color: #fff;
+    border-color: #3182ce;
     transform: translateY(-1px);
 }
 
 .user-pagination a.active {
-    background: #3498db;
-    color: white;
-    font-weight: bold;
-    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+    background: #3182ce;
+    color: #fff;
+    border-color: #3182ce;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(49,130,206,0.25);
 }
 
-/* ===================== POPUP XÓA ===================== */
+/* ------------------- POPUP XÓA ------------------- */
 .popup {
     display: none;
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.65);
-    justify-content: center;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
     align-items: center;
-    z-index: 9999;
-    backdrop-filter: blur(4px);
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.popup.active {
+    display: flex;
 }
 
 .popup-content {
-    background: white;
-    padding: 30px;
-    border-radius: 14px;
+    background: #fff;
     width: 90%;
     max-width: 420px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    border-radius: 12px;
+    padding: 28px;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.22);
     text-align: center;
-    animation: popupFadeIn 0.3s ease-out;
-}
-
-@keyframes popupFadeIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
+    animation: slideUp 0.35s ease-out;
 }
 
 .popup-content h3 {
-    margin: 0 0 16px;
-    color: #2c3e50;
-    font-size: 1.35rem;
+    margin: 0 0 14px;
+    font-size: 20px;
+    color: #2d3748;
     font-weight: 600;
 }
 
 .popup-content p {
-    color: #7f8c8d;
-    margin-bottom: 25px;
-    font-size: 0.95rem;
-    line-height: 1.5;
+    color: #4a5568;
+    margin: 0 0 24px;
+    font-size: 15px;
+    line-height: 1.6;
 }
 
 .popup-actions {
@@ -241,198 +323,81 @@
     justify-content: center;
 }
 
-.btn-luu {
-    background: #e74c3c;
-    color: white;
-    padding: 11px 22px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 0.9rem;
-    transition: all 0.3s;
+.popup-actions button {
+    flex: 1;
+    padding: 11px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-.btn-luu:hover {
-    background: #c0392b;
+.popup-actions .btn-luu {
+    background: #e53e3e;
+    color: #fff;
+}
+
+.popup-actions .btn-luu:hover {
+    background: #c53030;
     transform: translateY(-1px);
 }
 
-.btn-dong {
-    background: #95a5a6;
-    color: white;
-    border: none;
-    padding: 11px 22px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 0.9rem;
-    transition: all 0.3s;
-}
-
-.btn-dong:hover {
-    background: #7f8c8d;
-}
-
-/* ===================== TOAST THÔNG BÁO ===================== */
-#toast {
-    position: fixed;
-    top: 25px;
-    right: 25px;
-    z-index: 10000;
-    padding: 14px 20px;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    font-weight: 500;
-    min-width: 280px;
+.popup-actions .btn-dong {
+    background: #718096;
     color: #fff;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(-15px);
-    transition: all 0.4s ease;
 }
 
-#toast.show {
-    opacity: 1;
-    pointer-events: all;
-    transform: translateY(0);
+.popup-actions .btn-dong:hover {
+    background: #5a677a;
 }
 
-#toast.success {
-    background: #27ae60;
-    box-shadow: 0 4px 10px rgba(39,174,96,0.4);
+/* ------------------- ANIMATIONS ------------------- */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
-#toast.error {
-    background: #e74c3c;
-    box-shadow: 0 4px 10px rgba(231,76,60,0.4);
+@keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
-/* ===================== RESPONSIVE ===================== */
+/* ------------------- RESPONSIVE ------------------- */
 @media (max-width: 768px) {
+    .thanh-tieu-de {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+
+    .thanh-tieu-de h2 {
+        font-size: 22px;
+    }
+
     .hop-tim-kiem form {
         flex-direction: column;
         align-items: stretch;
-        max-width: 100%;
     }
 
-    .hop-tim-kiem input {
-        width: 100%;
+    .news-list th,
+    .news-list td {
+        padding: 10px 8px;
+        font-size: 13.5px;
     }
 
-    .user-pagination a {
-        min-width: 34px;
-        padding: 8px 10px;
+    .action-link {
+        font-size: 13px;
+        padding: 6px 10px;
+        margin-right: 6px;
     }
 
-    #toast {
-        right: 10px;
-        left: 10px;
-        text-align: center;
-        min-width: unset;
+    .action-link i {
+        font-size: 12px;
     }
-}
-/* ===================== FORM THÊM BIẾN THỂ ===================== */
-.form-them {
-    background: #fff;
-    padding: 30px 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    max-width: 600px;
-    margin: 0 auto;
-}
 
-.form-row {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-}
-
-.form-row label {
-    font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 6px;
-}
-
-.form-row select,
-.form-row input[type="number"],
-.form-row input[type="text"] {
-    padding: 10px 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    transition: border-color 0.2s;
-}
-
-.form-row select:focus,
-.form-row input:focus {
-    border-color: #3498db;
-    outline: none;
-}
-
-.form-row input[type="number"]::-webkit-inner-spin-button {
-    height: 20px;
-}
-
-.btn-luu, .btn-dong {
-    padding: 10px 20px;
-    border-radius: 6px;
-    font-weight: 500;
-    font-size: 0.95rem;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.3s;
-}
-
-.btn-luu {
-    background: #27ae60;
-    color: #fff;
-    border: none;
-}
-
-.btn-luu:hover {
-    background: #219150;
-    box-shadow: 0 4px 10px rgba(39, 174, 96, 0.2);
-}
-
-.btn-dong {
-    background: #95a5a6;
-    color: #fff;
-    border: none;
-}
-
-.btn-dong:hover {
-    background: #7f8c8d;
-}
-
-/* Hiển thị thông báo lỗi */
-.error-box {
-    background: #f8d7da;
-    color: #721c24;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    font-weight: 500;
-}
-
-.popup {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.65);
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    backdrop-filter: blur(4px);
-}
-
-.popup-content {
-    background: white;
-    padding: 30px;
-    border-radius: 14px;
-    width: 90%;
-    max-width: 420px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-    text-align: center;
-    animation: popupFadeIn 0.3s ease-out;
+    .popup-content {
+        width: 95%;
+        padding: 20px;
+    }
 }

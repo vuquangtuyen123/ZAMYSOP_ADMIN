@@ -268,3 +268,22 @@ button:active {
 .popup-footer { padding: 15px 20px; border-top: 1px solid #eee; text-align: right; }
 .btn-close { background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
 .btn-close:hover { background: #c82333; }
+
+/* CĂN PHẢI CHỮ "XIN CHÀO" – KHÔNG VIỀN, KHÔNG NỀN */
+.thong-tin-nguoi-dung {
+    margin-left: auto;           /* Đẩy về bên phải */
+    margin-right: 10px;          /* Khoảng cách với mép phải */
+    font-size: 15px;
+    color: #333;
+    font-weight: 500;
+    text-align: right;           /* Căn chữ sang phải */
+}
+
+.thong-tin-nguoi-dung span {
+    background: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+}

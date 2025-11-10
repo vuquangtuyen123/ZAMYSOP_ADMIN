@@ -15,7 +15,7 @@ $tab = $_GET['tab'] ?? 'reviews';
 $toast_message = $_GET['toast_message'] ?? '';
 $toast_type = $_GET['toast_type'] ?? 'success';
 ?>
-
+    <title>Quản lý bình luận - ZamyShop</title>
 <!DOCTYPE html>
 <html lang="vi">
 <head>

@@ -7,7 +7,7 @@
 <script src="assets/js/color.js"></script>
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý Màu sắc</title>
+    <title>Quản lý Màu sắc - ZamyShop</title>
 </head>
 <main class="noi-dung-chinh">
     <header class="thanh-tieu-de">

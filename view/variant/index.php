@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="assets/js/dashboard.js"></script>
 <script src="assets/js/variant.js"></script>
+    <title>Quản lý biến thể - ZamyShop</title>
 
 <div class="noi-dung-chinh">
     <div class="thanh-tieu-de">
@@ -16,8 +17,8 @@
         <form method="GET" action="">
             <input type="hidden" name="c" value="variant">
             <input type="hidden" name="a" value="index">
-            <input type="text" name="keyword" value="<?= htmlspecialchars($keyword ?? '') ?>" placeholder="Tìm theo tên sản phẩm...">
-            <button type="submit"><i class="fa fa-search"></i></button>
+            <input type="text" name="keyword" value="<?= htmlspecialchars($keyword ?? '') ?>" placeholder="Tìm theo tên/mã sản phẩm ...">
+            <button type="submit"><i class=""></i></button>
             <button type="button" class="reset-btn" onclick="window.location.href='index.php?c=variant&a=index'">Tải lại</button>
         </form>
     </div>
@@ -52,19 +53,16 @@
                         <td><?= htmlspecialchars($v['ten_mau']) ?></td>
                         <td><?= htmlspecialchars($v['ten_size']) ?></td>
                         <td><?= htmlspecialchars($v['ton_kho']) ?></td>
-                        <td>
-                            <!-- Luôn hiện Sửa -->
-                            <a href="index.php?c=variant&a=edit&id=<?= $v['ma_bien_the'] ?>" class="action-link edit-link">
-                                <i class="fas fa-edit"></i> Sửa
-                            </a>
-
-                            <!-- Ẩn Xóa nếu không có quyền -->
-                            <?php if (can('product.crud')): ?>
-                                <a href="#" class="action-link delete-link" onclick="openPopup(<?= $v['ma_bien_the'] ?>)">
-                                    <i class="fas fa-trash"></i> Xóa
-                                </a>
-                            <?php endif; ?>
-                        </td>
+<td>
+    <a class="action-link edit-link" href="index.php?c=variant&a=edit&id=<?= $v['ma_bien_the'] ?>">
+        <i class="fas fa-edit"></i> Sửa
+    </a>
+    <?php if (can('product.crud')): ?>
+        <a class="action-link delete-link" href="#" onclick="openPopup(<?= $v['ma_bien_the'] ?>)">
+            <i class="fas fa-trash"></i> Xóa
+        </a>
+    <?php endif; ?>
+</td>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>

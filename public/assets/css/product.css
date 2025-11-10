@@ -1,352 +1,348 @@
 /* ===========================================
-   DASHBOARD PRODUCT FORM - CSS HOÀN CHỈNH
+   PRODUCT FORM – ĐƠN GIẢN, SẠCH, ĐẸP
+   DÙNG CHUNG CHO THÊM & SỬA SẢN PHẨM
    =========================================== */
 
-/* MAIN LAYOUT */
-.noi-dung-chinh { 
-    margin-left: 250px; 
-    padding: 25px; 
-    min-height: calc(100vh - 70px); 
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-}
-@media (max-width: 768px) { 
-    .noi-dung-chinh { margin-left: 0; padding: 15px; } 
+/* ------------------- MAIN LAYOUT ------------------- */
+.noi-dung-chinh {
+    margin-left: 250px;
+    padding: 28px;
+    min-height: calc(100vh - 70px);
+    background: #f8f9fc;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: all 0.3s ease;
 }
 
-/* DASHBOARD CONTENT */
-.noi-dung-dashboard { 
-    background: #fff; 
-    border-radius: 12px; 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-    padding: 30px; 
-    position: relative;
-    overflow: hidden;
-}
-.noi-dung-dashboard::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+@media (max-width: 768px) {
+    .noi-dung-chinh {
+        margin-left: 0;
+        padding: 18px;
+    }
 }
 
-/* TITLE */
+/* ------------------- DASHBOARD CONTENT ------------------- */
+.noi-dung-dashboard {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    padding: 30px;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+/* ------------------- TITLE ------------------- */
 .noi-dung-dashboard h3 {
-    color: #2c3e50;
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 30px;
+    color: #2d3748;
+    font-size: 26px;
+    font-weight: 600;
+    margin: 0 0 28px;
     padding-bottom: 10px;
-    border-bottom: 3px solid #667eea;
-    position: relative;
-}
-.noi-dung-dashboard h3::after {
-    content: '';
-    position: absolute;
-    bottom: -3px;
-    left: 0;
-    width: 60px;
-    height: 3px;
-    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border-bottom: 2px solid #e2e8f0;
 }
 
-/* FORM STYLING */
-.form-them {
-    max-width: 100%;
+/* ------------------- FORM ROW ------------------- */
+.form-row {
+    margin-bottom: 22px;
 }
 
-.form-row { 
-    margin-bottom: 25px; 
-    position: relative;
-}
-
-.form-row label { 
-    display: block; 
-    margin-bottom: 8px; 
-    font-weight: 600; 
-    color: #2c3e50; 
+.form-row label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #4a5568;
     font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
-/* INPUT FIELDS */
+/* ------------------- INPUT FIELDS ------------------- */
 .form-row input[type="text"],
 .form-row input[type="number"],
 .form-row select,
-.form-row textarea { 
-    width: 100%; 
-    padding: 14px 16px; 
-    border: 2px solid #e1e8ed; 
-    border-radius: 8px; 
-    font-size: 14px; 
-    box-sizing: border-box; 
-    transition: all 0.3s ease;
+.form-row textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14.5px;
     background: #fff;
+    color: #2d3748;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
 }
 
 .form-row input:focus,
 .form-row select:focus,
 .form-row textarea:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    transform: translateY(-1px);
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.15);
+    background: #fff;
 }
 
 .form-row textarea {
     resize: vertical;
     min-height: 100px;
+    font-family: inherit;
 }
 
-/* CHECKBOX */
+/* ------------------- CHECKBOX ------------------- */
 .form-row input[type="checkbox"] {
     width: auto;
     margin-right: 10px;
     transform: scale(1.2);
+    accent-color: #3182ce;
+    cursor: pointer;
 }
 
 .form-row.checkbox-row {
     display: flex;
     align-items: center;
     gap: 10px;
+    font-size: 15px;
+    color: #4a5568;
+    font-weight: 500;
 }
 
-/* SELECT */
+/* ------------------- SELECT ------------------- */
 .form-row select {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
     background-position: right 12px center;
     background-repeat: no-repeat;
-    background-size: 16px;
-    padding-right: 40px;
+    background-size: 12px;
+    padding-right: 38px;
     appearance: none;
+    cursor: pointer;
 }
 
-/* IMAGE UPLOAD SECTION */
+/* ------------------- IMAGE UPLOAD ------------------- */
 .form-row.image-upload {
-    background: #f8f9fa;
-    padding: 20px;
-    border-radius: 8px;
-    border: 2px dashed #dee2e6;
+    background: #f8fafc;
+    padding: 18px;
+    border-radius: 10px;
+    border: 1.5px dashed #cbd5e0;
     transition: all 0.3s ease;
 }
 
 .form-row.image-upload:hover {
-    border-color: #667eea;
-    background: #f0f4ff;
+    border-color: #3182ce;
+    background: #edf2f7;
 }
 
+/* ------------------- IMAGE PREVIEW ------------------- */
 #existing-images,
 #new-images-preview {
-    display: flex; 
-    flex-wrap: wrap; 
-    gap: 15px; 
-    margin: 15px 0;
-    padding: 10px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin: 14px 0;
 }
 
-.image-container {
-    position: relative; 
-    border: 2px solid #e9ecef; 
-    border-radius: 10px; 
-    padding: 10px; 
+.image-container,
+#new-images-preview > div {
+    position: relative;
+    width: 110px;
+    height: 110px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
     background: #fff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     transition: all 0.3s ease;
 }
 
-.image-container:hover {
+.image-container:hover,
+#new-images-preview > div:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    border-color: #3182ce;
 }
 
-.image-container img {
-    width: 120px; 
-    height: 120px; 
-    object-fit: cover; 
+.image-container img,
+#new-images-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     border-radius: 6px;
-    display: block;
 }
 
+/* Nút xóa ảnh */
 .remove-image-btn,
 .remove-preview-btn {
     position: absolute;
-    top: 8px; 
-    right: 8px; 
-    background: #dc3545; 
-    color: #fff; 
-    width: 28px; 
-    height: 28px; 
-    border-radius: 50%; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    text-decoration: none; 
+    top: 6px;
+    right: 6px;
+    background: #e53e3e;
+    color: #fff;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 12px;
+    font-weight: bold;
     border: none;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(220,53,69,0.3);
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(229,62,62,0.3);
 }
 
 .remove-image-btn:hover,
 .remove-preview-btn:hover {
-    background: #c82333;
+    background: #c53030;
     transform: scale(1.1);
 }
 
-/* VARIANT SECTION */
+/* ------------------- BIẾN THỂ ------------------- */
 .noi-dung-dashboard h4 {
-    color: #495057;
+    color: #2d3748;
     font-size: 18px;
     font-weight: 600;
-    margin: 30px 0 20px 0;
+    margin: 28px 0 16px;
     padding-bottom: 8px;
-    border-bottom: 2px solid #e9ecef;
-    position: relative;
+    border-bottom: 1.5px solid #e2e8f0;
+}
+
+#variant-list {
+    background: #f8fafc;
+    padding: 16px;
+    border-radius: 10px;
+    border: 1.5px dashed #cbd5e0;
+    margin-bottom: 20px;
 }
 
 .variant-row {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr auto;
-    gap: 15px;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
     align-items: end;
-    padding: 15px;
-    background: #f8f9fa;
+    padding: 16px;
+    background: #fff;
     border-radius: 8px;
-    margin-bottom: 10px;
-    border-left: 4px solid #667eea;
+    margin-bottom: 12px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.variant-row:hover {
+    border-color: #3182ce;
+    box-shadow: 0 3px 10px rgba(49, 130, 206, 0.08);
 }
 
 .variant-row label {
-    text-transform: none;
-    font-weight: 500;
-    font-size: 13px;
-    color: #6c757d;
-    margin: 0;
+    font-weight: 600;
+    font-size: 13.5px;
+    color: #4a5568;
+    margin: 0 0 6px;
 }
 
 .variant-row select,
 .variant-row input {
     padding: 10px 12px;
     border-radius: 6px;
-    font-size: 13px;
+    font-size: 13.8px;
+    border: 1.5px solid #e2e8f0;
+    background: #fff;
+    transition: all 0.3s ease;
 }
 
 .variant-row input {
     max-width: 100px;
 }
 
-/* BUTTONS */
+/* ------------------- BUTTONS ------------------- */
 .form-actions {
     display: flex;
-    gap: 15px;
+    gap: 14px;
     justify-content: flex-end;
     margin-top: 30px;
     padding-top: 20px;
-    border-top: 1px solid #e9ecef;
+    border-top: 1px solid #e2e8f0;
 }
 
-.all-btn { 
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 20px; 
-    background: #6c757d; 
-    color: #fff !important; 
-    border-radius: 8px; 
-    font-weight: 500; 
-    border: none;
-    transition: all 0.3s ease; 
-    text-decoration: none;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.all-btn:hover { 
-    background: #5a6268; 
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(108,117,127,0.3);
-}
-
-.them-moi-btn { 
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 14px 25px; 
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%); 
-    color: #fff; 
-    text-decoration: none; 
-    border-radius: 8px; 
-    font-weight: 600; 
-    border: none;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    font-size: 14px;
-    box-shadow: 0 2px 8px rgba(40,167,69,0.2);
-}
-
-.them-moi-btn:hover { 
-    background: linear-gradient(135deg, #218838 0%, #1ea085 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(40,167,69,0.3);
-}
-
-/* ADD VARIANT BUTTON */
 .form-actions.add-variant {
     justify-content: flex-start;
     border-top: none;
     padding-top: 0;
-    margin-top: 15px;
+    margin-top: 16px;
 }
 
-/* ERROR MESSAGE */
+.all-btn,
+.them-moi-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14.5px;
+    border: none;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.all-btn {
+    background: #718096;
+    color: #fff;
+}
+
+.all-btn:hover {
+    background: #5a677a;
+    transform: translateY(-1px);
+}
+
+.them-moi-btn {
+    background: #38a169;
+    color: #fff;
+}
+
+.them-moi-btn:hover {
+    background: #2f855a;
+    transform: translateY(-1px);
+}
+
+/* ------------------- ERROR MESSAGE ------------------- */
 .error-message {
-    background: #f8d7da;
-    color: #721c24;
+    background: #fed7d7;
+    color: #9b2c2c;
     padding: 12px 16px;
     border-radius: 8px;
-    border: 1px solid #f5c6cb;
+    border-left: 4px solid #fc8181;
     margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 500;
 }
 
-/* RESPONSIVE */
+/* ------------------- RESPONSIVE ------------------- */
 @media (max-width: 768px) {
     .noi-dung-dashboard {
         padding: 20px;
         margin: 10px;
+        border-radius: 10px;
     }
-    
+
     .variant-row {
         grid-template-columns: 1fr;
-        gap: 10px;
+        gap: 12px;
+        padding: 14px;
     }
-    
+
     .form-actions {
         flex-direction: column;
     }
-    
-    .image-container img {
+
+    .image-container img,
+    #new-images-preview img {
         width: 80px;
         height: 80px;
     }
+
+    .noi-dung-dashboard h3 {
+        font-size: 23px;
+    }
 }
 
-/* ANIMATIONS */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
+/* ------------------- ANIMATIONS ------------------- */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(15px); }
     to { opacity: 1; transform: translateY(0); }
-}
-
-.noi-dung-dashboard {
-    animation: fadeIn 0.5s ease-out;
-}
-
-/* LOADING STATE */
-.form-them button:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
 }

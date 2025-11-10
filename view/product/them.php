@@ -41,12 +41,7 @@
 					<?php endforeach; ?>
 				</select>
 			</div>
-			<?php /* Tạm thời ẩn - chưa có chức năng xử lý
-			<div class="form-row">
-				<label>Mã bộ sưu tập (tuỳ chọn)</label>
-				<input type="text" name="ma_bo_suu_tap">
-			</div>
-			*/ ?>
+
 			<div class="form-row">
 				<label>Hiển thị</label>
 				<input type="checkbox" name="trang_thai_hien_thi" value="1" checked>
@@ -58,7 +53,7 @@
             <div id="new-images-preview" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;"></div>
         </div>
 
-			<h4>Biến thể (Màu sắc / Size / Tồn kho)</h4>
+			<h4>Biến thể (Màu sắc / Size)</h4>
 			<div id="variant-list">
 				<div class="form-row variant-row">
 					<label>Màu</label>
@@ -75,10 +70,14 @@
 							<option value="<?= (int)$sz['ma_size'] ?>"><?= htmlspecialchars($sz['ten_size']) ?></option>
 						<?php endforeach; ?>
 					</select>
-				<!--	<label>Tồn kho</label>
-					<input type="number" name="variant_stock[]" min="0" value="0" style="max-width:140px;" -->
+
+					<!--
+					<label>Tồn kho</label>
+					<input type="number" name="variant_stock[]" min="0" value="0" style="max-width:140px;">
+					-->
 				</div>
 			</div>
+
 			<div class="form-actions" style="margin-top:8px;">
 				<button type="button" class="all-btn" onclick="addVariantRow()"><i class="fas fa-plus"></i> Thêm biến thể</button>
 			</div>
@@ -95,7 +94,7 @@ function addVariantRow() {
 	const container = document.getElementById('variant-list');
 	const row = container.querySelector('.variant-row').cloneNode(true);
 	row.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
-	row.querySelector('input[name="variant_stock[]"]').value = 0;
+	// row.querySelector('input[name="variant_stock[]"]').value = 0; // Ẩn tồn kho
 	container.appendChild(row);
 }
 
@@ -150,4 +149,3 @@ function previewNewImages(input) {
 	}
 }
 </script>
-

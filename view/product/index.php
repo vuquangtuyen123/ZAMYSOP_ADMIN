@@ -9,7 +9,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>Quản lý Sản phẩm</title>
+	<title>Quản lý Sản phẩm -ZamyShop</title>
 </head>
 <main class="noi-dung-chinh">
 	<header class="thanh-tieu-de">

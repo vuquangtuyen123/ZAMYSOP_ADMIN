@@ -12,7 +12,7 @@ if (!empty($messages)) {
     }
 }
 ?>
-
+    <title>Quản lý tin nhắn - ZamyShop</title>
 <?php include __DIR__ . '/../menu.php'; ?>
 <link rel="stylesheet" href="assets/css/dashboard-tiengviet.css">
 <link rel="stylesheet" href="assets/css/message.css">
