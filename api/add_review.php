@@ -16,9 +16,9 @@ require_once '../config/supabase.php';
 
 try {
     error_log("=== ADD REVIEW START ===");
-
+-
     // 1Lấy dữ liệu từ POST hoặc JSON
-    $input = json_decode(file_get_contents('php://input'), true) ?? [];
+    $input = json_decode(file_get_contents(filename: 'php://input'), true) ?? [];
 
     $productId = $_POST['ma_san_pham'] ?? ($input['ma_san_pham'] ?? null);
     $userId = $_POST['ma_nguoi_dung'] ?? ($input['ma_nguoi_dung'] ?? null);

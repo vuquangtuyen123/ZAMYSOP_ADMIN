@@ -9,8 +9,48 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>Quản lý Sản phẩm -ZamyShop</title>
+	<title>Quản lý Sản phẩm - ZamyShop</title>
+	<style>
+	/* ==============================
+	   TOAST NOTIFICATION (GÓC TRÊN PHẢI)
+	   ============================== */
+	.toast {
+	    visibility: hidden;
+	    min-width: 250px;
+	    max-width: 320px;
+	    background-color: #333;
+	    color: #fff;
+	    text-align: center;
+	    border-radius: 8px;
+	    padding: 14px 20px;
+	    position: fixed;
+	    z-index: 9999;
+	    top: 20px;
+	    right: 20px;
+	    font-size: 15px;
+	    font-weight: 500;
+	    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+	    transition: all 0.5s ease;
+	}
+
+	.toast.show {
+	    visibility: visible;
+	    opacity: 1;
+	    animation: fadeInRight 0.5s, fadeOut 0.5s 2.5s;
+	}
+
+	@keyframes fadeInRight {
+	    from { opacity: 0; transform: translateX(20px); }
+	    to { opacity: 1; transform: translateX(0); }
+	}
+
+	@keyframes fadeOut {
+	    from { opacity: 1; }
+	    to { opacity: 0; }
+	}
+	</style>
 </head>
+
 <main class="noi-dung-chinh">
 	<header class="thanh-tieu-de">
 		<div class="hop-tim-kiem">
@@ -35,11 +75,9 @@
 				<tr>
 					<th>Mã</th>
 					<th>Tên sản phẩm</th>
-					<th>Giá </th> 
-					<!--<th>Giá bán</th> -->
+					<th>Giá</th> 
 					<th>Danh mục</th>
 					<th>Trạng thái</th>
-					<!-- <th>Sản phẩm nổi bật</th>-->
 					<th>Hành động</th>
 				</tr>
 			</thead>
@@ -49,11 +87,8 @@
 					<tr>
 						<td><?= htmlspecialchars($p['ma_san_pham']) ?></td>
 						<td><?= htmlspecialchars($p['ten_san_pham']) ?></td>
-					    <td><?= number_format((float)($p['muc_gia_goc'] ?? 0), 0, ',', '.') ?> đ</td> 
-				<!--<td><number_format((float)($p['gia_ban'] ?? 0), 0, ',', '.') ?> đ</td> -->
-
+					    <td><?= number_format((float)($p['muc_gia_goc'] ?? 0), 0, ',', '.') ?> đ</td>
 						<td><?= htmlspecialchars($categoryMap[$p['ma_danh_muc']] ?? '—') ?></td>
-					
 						<td>
 							<label class="switch">
 								<input type="checkbox" class="toggle-featured" 
@@ -62,7 +97,6 @@
 								<span class="slider"></span>
 							</label>
 						</td>
-				
 						<td>
 							<a href="index.php?c=product&a=sua&ma_san_pham=<?= $p['ma_san_pham'] ?>" class="action-link edit-link"><i class="fas fa-edit"></i> Sửa</a>
 							<a href="index.php?c=product&a=xoa&ma_san_pham=<?= $p['ma_san_pham'] ?>" class="action-link delete-link" onclick="return confirm('Bạn có chắc muốn xóa?')"><i class="fas fa-trash"></i> Xóa</a>
@@ -70,7 +104,7 @@
 					</tr>
 				<?php endforeach; ?>
 			<?php else: ?>
-				<tr><td colspan="8" style="text-align:center;">Không có sản phẩm nào</td></tr>
+				<tr><td colspan="6" style="text-align:center;">Không có sản phẩm nào</td></tr>
 			<?php endif; ?>
 			</tbody>
 		</table>
@@ -78,25 +112,38 @@
 		<div class="pagination" style="margin-top:40px; margin-bottom:40px; text-align:center;">
 			<?php if ($totalPages > 1): ?>
 				<?php $prevPage = $page > 1 ? $page - 1 : 1; $nextPage = $page < $totalPages ? $page + 1 : $totalPages; ?>
-				<a href="index.php?c=product&a=index&page=<?= $prevPage ?><?= $search ? '&search=' . urlencode($search) : '' ?>" style="margin:0 4px; padding:6px 12px; border-radius:4px; border:1px solid #ddd; text-decoration:none; color:#2196F3;">&lt;</a>
+				<a href="index.php?c=product&a=index&page=<?= $prevPage ?><?= $search ? '&search=' . urlencode($search) : '' ?>">&lt;</a>
 				<?php for ($i = 1; $i <= $totalPages; $i++): ?>
-					<a href="index.php?c=product&a=index&page=<?= $i ?><?= $search ? '&search=' . urlencode($search) : '' ?>" class="<?= $i === $page ? 'active' : '' ?>" style="margin:0 4px; padding:6px 12px; border-radius:4px; border:1px solid #ddd; text-decoration:none;<?= $i === $page ? 'background:#2196F3;color:#fff;' : 'color:#2196F3;' ?>"><?= $i ?></a>
+					<a href="index.php?c=product&a=index&page=<?= $i ?><?= $search ? '&search=' . urlencode($search) : '' ?>" class="<?= $i === $page ? 'active' : '' ?>"><?= $i ?></a>
 				<?php endfor; ?>
-				<a href="index.php?c=product&a=index&page=<?= $nextPage ?><?= $search ? '&search=' . urlencode($search) : '' ?>" style="margin:0 4px; padding:6px 12px; border-radius:4px; border:1px solid #ddd; text-decoration:none; color:#2196F3;">&gt;</a>
+				<a href="index.php?c=product&a=index&page=<?= $nextPage ?><?= $search ? '&search=' . urlencode($search) : '' ?>">&gt;</a>
 			<?php endif; ?>
 		</div>
 	</div>
 
-<script>
-function showToast(message) {
-	let toast = document.getElementById('toast');
-	if (!toast) { toast = document.createElement('div'); toast.id = 'toast'; toast.className = 'toast'; document.body.appendChild(toast); }
-	toast.textContent = message; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3000);
-}
-<?php if (!empty($message)): ?>
-showToast("<?= addslashes($message) ?>");
-<?php endif; ?>
+	<!-- Toast container -->
+	<div id="toast" class="toast"></div>
+</main>
 
+<script>
+// =========================
+// TOAST NOTIFICATION
+// =========================
+function showToast(message, type = 'success') {
+    let toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.style.backgroundColor = type === 'error' ? '#e53e3e' : '#38a169';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// Hiển thị thông báo từ PHP
+<?php if (!empty($message)): ?>
+<?php 
+$type = ($action ?? '') === 'xoa' ? 'error' : 'success'; 
+?>
+showToast("<?= addslashes($message) ?>", "<?= $type ?>");
+<?php endif; ?>
 
 // Toggle sản phẩm nổi bật
 document.addEventListener('DOMContentLoaded', function() {

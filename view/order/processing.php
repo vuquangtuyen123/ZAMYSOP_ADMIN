@@ -12,7 +12,7 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
 
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý Đơn hàng</title>
+    <title>Quản lý Đơn hàng - Đang xử lý</title>
 </head>
 <div class="noi-dung-chinh">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
@@ -47,30 +47,23 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
                         <th>Ngày giao</th>
                         <th>Tổng tiền</th>
                         <th>Trạng thái</th>
+                        <th>Nhân viên xử lý</th>
                         <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($orders as $order): 
+                    <?php foreach ($orders as $order):
+                        if (!is_array($order)) continue;
+
+                        // Truy cập dữ liệu an toàn
+                        $maDonHang = $order['ma_don_hang'] ?? 0;
                         $statusId = $order['ma_trang_thai_don_hang'] ?? 0;
                         $statusName = $order['order_statuses']['ten_trang_thai'] ?? '—';
                         $note = $order['ghi_chu'] ?? '';
                         $canReturn = stripos($note, 'yêu cầu hoàn hàng') !== false || stripos($note, 'hoàn hàng') !== false;
+                        $maNhanVien = $order['ma_nhan_vien_xu_ly'] ?? null;
 
-                        // CHUYỂN GMT/UTC → VIỆT NAM (GMT+7)
-                        $ngayGiao = $order['ngay_giao_hang'] ?? null;
-                        if ($ngayGiao) {
-                            try {
-                               $dtGiao = new DateTime($ngayGiao, new DateTimeZone('UTC'));
-                               $dtGiao->setTimezone(new DateTimeZone('Asia/Ho_Chi_Minh'));
-                            $ngayGiaoFormatted = $dtGiao->format('d/m/Y H:i');
-                            } catch (Exception $e) {
-                                $ngayGiaoFormatted = date('d/m/Y H:i', strtotime($ngayGiao));
-                            }
-                        } else {
-                            $ngayGiaoFormatted = '<em style="color:#999">Chưa giao</em>';
-                        }
-
+                        // Xử lý ngày đặt (UTC → Việt Nam)
                         $ngayDat = $order['ngay_dat_hang'] ?? null;
                         if ($ngayDat) {
                             try {
@@ -83,24 +76,47 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
                         } else {
                             $ngayDatFormatted = '<em style="color:#999">—</em>';
                         }
+
+                        // Xử lý ngày giao
+                        $ngayGiao = $order['ngay_giao_hang'] ?? null;
+                        if ($ngayGiao) {
+                            try {
+                                $dtGiao = new DateTime($ngayGiao, new DateTimeZone('UTC'));
+                                $dtGiao->setTimezone(new DateTimeZone('Asia/Ho_Chi_Minh'));
+                                $ngayGiaoFormatted = $dtGiao->format('d/m/Y H:i');
+                            } catch (Exception $e) {
+                                $ngayGiaoFormatted = date('d/m/Y H:i', strtotime($ngayGiao));
+                            }
+                        } else {
+                            $ngayGiaoFormatted = '<em style="color:#999">Chưa giao</em>';
+                        }
+
+                        $tenNguoiDung = 'Khách lẻ';
+                        if (isset($order['users']) && is_array($order['users']) && isset($order['users']['ten_nguoi_dung'])) {
+                            $tenNguoiDung = $order['users']['ten_nguoi_dung'];
+                        }
                     ?>
-                    <tr data-order-id="<?= $order['ma_don_hang'] ?? 0 ?>">
-                        <td>#<?= $order['ma_don_hang'] ?? 0 ?></td>
-                        <td><?= htmlspecialchars($order['users']['ten_nguoi_dung'] ?? 'Khách lẻ') ?></td>
+                    <tr data-order-id="<?= $maDonHang ?>">
+                        <td>#<?= $maDonHang ?></td>
+                        <td><?= htmlspecialchars($tenNguoiDung) ?></td>
                         <td><?= $ngayDatFormatted ?></td>
                         <td><?= $ngayGiaoFormatted ?></td>
                         <td><?= number_format($order['tong_gia_tri_don_hang'] ?? 0) ?>đ</td>
                         <td><span class="trang-thai status-<?= $statusId ?>"><?= $statusName ?></span></td>
                         <td>
-                            <button class="nut-xem" data-id="<?= $order['ma_don_hang'] ?? 0 ?>">Xem</button>
+                            <?php echo $maNhanVien ? 'ID: ' . $maNhanVien : '<em style="color:#999;">Chưa xử lý</em>'; ?>
+                        </td>
+                        <td>
+                            <button class="nut-xem" data-id="<?= $maDonHang ?>">Xem</button>
                             <?php if ($statusId == 1): ?>
-                                <button class="nut-xac-nhan" data-id="<?= $order['ma_don_hang'] ?? 0 ?>" data-action="confirm">Xác nhận</button>
+                                <button class="nut-xac-nhan" data-id="<?= $maDonHang ?>" data-action="confirm">Xác nhận</button>
+                                <button class="nut-huy-don" data-id="<?= $maDonHang ?>" data-action="cancel">Hủy đơn</button>
                             <?php elseif ($statusId == 2): ?>
-                                <button class="nut-giao-hang" data-id="<?= $order['ma_don_hang'] ?? 0 ?>" data-action="deliver">Giao hàng</button>
+                                <button class="nut-giao-hang" data-id="<?= $maDonHang ?>" data-action="deliver">Giao hàng</button>
                             <?php elseif ($statusId == 3): ?>
-                                <button class="nut-da-giao" data-id="<?= $order['ma_don_hang'] ?? 0 ?>" data-action="complete">Đã giao</button>
+                                <button class="nut-da-giao" data-id="<?= $maDonHang ?>" data-action="complete">Đã giao</button>
                             <?php elseif ($canReturn && in_array($statusId, [1,2,3])): ?>
-                                <button class="nut-hoan-hang" data-id="<?= $order['ma_don_hang'] ?? 0 ?>" data-action="return">Chấp nhận hoàn</button>
+                                <button class="nut-hoan-hang" data-id="<?= $maDonHang ?>" data-action="return">Chấp nhận hoàn</button>
                             <?php endif; ?>
                         </td>
                     </tr>
@@ -126,7 +142,7 @@ date_default_timezone_set('Asia/Ho_Chi_Minh');
     <?php endif; ?>
 </div>
 
-<!-- POPUP -->
+<!-- POPUP CHI TIẾT -->
 <div id="popup-detail" class="popup-overlay" style="display:none">
     <div class="popup-content">
         <span class="close-popup">×</span>

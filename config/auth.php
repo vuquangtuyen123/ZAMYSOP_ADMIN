@@ -45,6 +45,7 @@ function role_capabilities() {
 			'discount.create_edit' => true,
 			'inventory.upload' => true,
 			'news_banner.create_edit' => true,
+			'comment.moderate' => true,
 			'comment.reply' => true,
 			'message.reply' => true,
 			'logout' => true,

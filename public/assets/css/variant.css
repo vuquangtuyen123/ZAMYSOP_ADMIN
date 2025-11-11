@@ -401,3 +401,122 @@
         padding: 20px;
     }
 }
+/* ==============================
+   VARIANT EDIT FORM – SỬA BIẾN THỂ
+   ============================== */
+.noi-dung-chinh form {
+    background: #fff;
+    padding: 22px 28px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+.noi-dung-chinh .form-group {
+    margin-bottom: 20px;
+}
+
+.noi-dung-chinh .form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #2d3748;
+}
+
+.noi-dung-chinh .form-group input[type="number"],
+.noi-dung-chinh .form-group select {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 14.5px;
+    border-radius: 8px;
+    border: 1.5px solid #e2e8f0;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+
+.noi-dung-chinh .form-group input[type="number"]:focus,
+.noi-dung-chinh .form-group select:focus {
+    border-color: #3182ce;
+    box-shadow: 0 0 6px rgba(49,130,206,0.25);
+}
+
+.noi-dung-chinh select:disabled {
+    background-color: #f1f5f9;
+    color: #718096;
+    cursor: not-allowed;
+}
+
+.noi-dung-chinh .form-actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.noi-dung-chinh .form-actions .btn-luu {
+    background-color: #3182ce;
+    color: #fff;
+    padding: 10px 22px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.noi-dung-chinh .form-actions .btn-luu:hover {
+    background-color: #2c6cb0;
+    transform: translateY(-1px);
+}
+
+.noi-dung-chinh .form-actions .btn-dong {
+    background-color: #718096;
+    color: #fff;
+    padding: 10px 22px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.noi-dung-chinh .form-actions .btn-dong:hover {
+    background-color: #5a677a;
+}
+
+/* THÔNG BÁO LỖI CHO FORM */
+.noi-dung-chinh .alert-message {
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-weight: 500;
+    font-size: 14.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-left: 4px solid;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.noi-dung-chinh .alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border-left-color: #dc3545;
+}
+
+@media (max-width: 768px) {
+    .noi-dung-chinh form {
+        padding: 18px 20px;
+    }
+
+    .noi-dung-chinh .form-actions {
+        flex-direction: column;
+    }
+
+    .noi-dung-chinh .form-actions .btn-luu,
+    .noi-dung-chinh .form-actions .btn-dong {
+        width: 100%;
+    }
+}
