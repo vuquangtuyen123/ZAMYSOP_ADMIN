@@ -26,7 +26,7 @@ $toast_type = $_GET['toast_type'] ?? 'success';
     <link rel="stylesheet" href="assets/css/dashboard-tiengviet.css">
     <link rel="stylesheet" href="assets/css/comment.css">
     <script src="assets/js/dashboard.js"></script>
-<script src="assets/js/danhmuc.js"></script>
+    <script src="assets/js/danhmuc.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -94,12 +94,7 @@ $toast_type = $_GET['toast_type'] ?? 'success';
                     </div>
                     <div class="review-info">
                         - <?= date('d/m/Y H:i', strtotime($reply['thoi_gian_tao'])) ?>
-                        - <span class="status <?= $reply['trang_thai'] == 1 ? 'display' : 'hidden' ?>">
-                            <?= $reply['trang_thai'] == 1 ? 'TÍCH CỰC' : 'TIÊU CỰC' ?>
-                        </span>
-                        - <span class="status-reply <?= $reply['trang_thai_phan_hoi'] == 1 ? 'done' : 'pending' ?>">
-                            <?= $reply['trang_thai_phan_hoi'] == 1 ? 'Đã phản hồi' : 'Chưa phản hồi' ?>
-                        </span>
+                        <!-- Không hiển thị trạng thái tích cực/tiêu cực và phản hồi cho reply -->
                     </div>
 
                     <?php if (!empty($reply['hinh_anh'])): ?>
@@ -113,15 +108,7 @@ $toast_type = $_GET['toast_type'] ?? 'success';
                     <?php endif; ?>
 
                     <div class="action">
-                        <?php if ($reply['trang_thai'] == 1): ?>
-                            <a href="index.php?c=comment&a=change_status&review_id=<?= $reply['ma_danh_gia'] ?>&status=hidden&page=<?= $current_page ?>" onclick="return confirmAction('Ẩn bình luận này?', 'Đã ẩn')">
-                                <button class="btn-hide">Ẩn</button>
-                            </a>
-                        <?php else: ?>
-                            <a href="index.php?c=comment&a=change_status&review_id=<?= $reply['ma_danh_gia'] ?>&status=display&page=<?= $current_page ?>" onclick="return confirmAction('Hiện bình luận này?', 'Đã hiện')">
-                                <button class="btn-hide">Hiện</button>
-                            </a>
-                        <?php endif; ?>
+                        <!-- Không có nút Ẩn/Hiện cho reply -->
                         <a href="index.php?c=comment&a=change_status&review_id=<?= $reply['ma_danh_gia'] ?>&status=deleted&page=<?= $current_page ?>" onclick="return confirmAction('Xóa bình luận con?', 'Đã xóa')">
                             <button class="btn-delete"><i class="fa fa-trash"></i></button>
                         </a>
@@ -140,7 +127,7 @@ $toast_type = $_GET['toast_type'] ?? 'success';
                         </button>
                         <div id="replies-<?= $reply['ma_danh_gia'] ?>" style="display:none;">
                             <?php foreach ($reply['replies'] as $sub_reply): ?>
-                                <?php if ($sub_reply['trang_thai'] == 1): displayReply($sub_reply, $level + 1); endif; ?>
+                                <?php displayReply($sub_reply, $level + 1); ?>
                             <?php endforeach; ?>
                         </div>
                     <?php endif; ?>
@@ -181,7 +168,7 @@ $toast_type = $_GET['toast_type'] ?? 'success';
                             </button>
                             <div id="replies-<?= $review['ma_danh_gia'] ?>" style="display:none;">
                                 <?php foreach ($review['replies'] as $rep): ?>
-                                    <?php if ($rep['trang_thai'] == 1): displayReply($rep); endif; ?>
+                                    <?php displayReply($rep); ?>
                                 <?php endforeach; ?>
                             </div>
                         <?php endif; ?>
